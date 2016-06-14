@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk-res-auto"
 	xmlns:mapbox="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
+	>
+	
 	<com.mapbox.mapboxsdk.maps.MapView
 		android:id="@+id/mapView"
 		android:layout_width="match_parent"
@@ -20,7 +22,20 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="end|bottom"
 		android:layout_margin="16dp"
-		tools:backgroundTint="@color/colorAccent"
+		android:src="@drawable/icon_gps"
+		tools:backgroundTint="@color/mapboxGreen"
+		/>
+
+	<com.arlib.floatingsearchview.FloatingSearchView
+		android:id="@+id/floatingSearchView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:floatingSearch_searchBarMarginLeft="@dimen/search_view_inset"
+		app:floatingSearch_searchBarMarginRight="@dimen/search_view_inset"
+		app:floatingSearch_searchBarMarginTop="@dimen/search_view_inset"
+		app:floatingSearch_searchHint="@string/searchBarHint"
+		app:floatingSearch_showSearchKey="false"
+		app:floatingSearch_leftActionMode="showHamburger"
 		/>
 
 </android.support.design.widget.CoordinatorLayout>
