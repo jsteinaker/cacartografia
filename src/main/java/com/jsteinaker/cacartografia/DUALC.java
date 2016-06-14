@@ -3,11 +3,17 @@ package com.jsteinaker.cacartografia;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import java.io.InputStreamReader;
+import java.lang.Exception;
+import java.lang.StringBuilder;
 
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -19,6 +25,10 @@ import com.mapbox.mapboxsdk.location.LocationServices;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DUALC extends AppCompatActivity
 {
@@ -45,7 +55,7 @@ public class DUALC extends AppCompatActivity
 			public void onMapReady(MapboxMap mapboxMap) {
 				map = mapboxMap;
 				/** Cuando el mapa está listo, movemos la cámara al punto actual. **/
-				locateUser();
+				//locateUser();
 			}
 		});
 
@@ -60,16 +70,9 @@ public class DUALC extends AppCompatActivity
 			}
 		});
 
-		/** Botón flotante para marcador, y listener **/
-
-		markerButton = (FloatingActionButton) findViewById(R.id.markerButton);
-		markerButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				putMarker(locationServices.getLastLocation());
-			}
-		});
-
+		/** Y creamos los marcadores, llamando a otra clase para
+		 * cargar el GeoJSON */
+		new LoadMarkers().execute();
     }
 
 	@Override
@@ -111,7 +114,7 @@ public class DUALC extends AppCompatActivity
 					// Mover mapa
 					map.setCameraPosition(new CameraPosition.Builder()
 						.target(new LatLng(location))
-						.zoom(16)
+						.zoom(14)
 						.build());
 				}
 			}
@@ -119,15 +122,56 @@ public class DUALC extends AppCompatActivity
 		map.setMyLocationEnabled(true);
 	}
 
-	// Agrega marcador en el punto seleccionado
-	public void putMarker(Location location)
+	private class LoadMarkers extends AsyncTask<Void, Void, String>
 	{
-		// Creamos ícono
-		IconFactory iconFactory = IconFactory.getInstance(DUALC.this);
-		Drawable iconDrawable = ContextCompat.getDrawable(DUALC.this, R.drawable.toilet);
-		Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
-
-		// Agregamos el marcador
-		map.addMarker(new MarkerOptions().position(new LatLng(location)).icon(markerIcon));
+		@Override
+		protected String doInBackground(Void... args) {
+			final StringBuilder json = new StringBuilder();
+			try
+			{
+				InputStreamReader inputStreamReader = new InputStreamReader(getAssets().open("toilets.json"));
+				int read;
+				char[] buff = new char[1024];
+				while ((read = inputStreamReader.read(buff)) != -1)
+						{
+							json.append(buff, 0, read);
+						}
+			} catch (Exception e) {
+				Log.e("DUALC", "Exception loading GeoJSON: " + e.toString());
+			}
+	
+			return json.toString();
+		}
+	
+		@Override
+		protected void onPostExecute(String json) {
+	
+			// Creamos ícono a partir del drawable
+			IconFactory iconFactory = IconFactory.getInstance(DUALC.this);
+			Drawable iconDrawable = ContextCompat.getDrawable(DUALC.this, R.drawable.toilet);
+			Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
+			
+			try
+			{
+				Log.w("Sarasa", "Arrancando");
+				JSONObject intermediate = new JSONObject(json);
+				JSONArray features = intermediate.getJSONArray("features");
+				Log.w("Sarasa", "Array cargado");
+				for (int i = 0; i < features.length(); i++)
+				{
+					JSONObject feature = features.getJSONObject(i);
+					JSONObject geometry = feature.getJSONObject("geometry");
+					JSONArray coordinates = geometry.getJSONArray("coordinates");
+					LatLng location = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
+	
+					// Crea el marcador
+					JSONObject properties = feature.getJSONObject("properties");
+					map.addMarker(new MarkerOptions().title(properties.getString("title")).snippet(properties.getString("description")).position(location).icon(markerIcon));
+				}
+			} catch (JSONException e) {
+				Log.e("DUALC", "Error processing JSON: " + e);
+			}
+		}
+	
 	}
 }
