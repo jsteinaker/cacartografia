@@ -30,3 +30,6 @@ proguard/
 
 # Android Studio captures folder
 captures/
+
+# Passwords, tokens, hashs, etc
+src/main/res/values/secrets.xml
