@@ -5,10 +5,13 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import java.io.InputStreamReader;
@@ -48,32 +51,22 @@ public class DUALC extends AppCompatActivity
 		
 		locationServices = LocationServices.getLocationServices(DUALC.this);
 
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+
 		mapView = (MapView) findViewById(R.id.mapView);
 		mapView.onCreate(savedInstanceState);
-		mapView.getMapAsync(new OnMapReadyCallback() {
-			@Override
-			public void onMapReady(MapboxMap mapboxMap) {
-				map = mapboxMap;
-				/** Cuando el mapa está listo, movemos la cámara al punto actual. **/
-				//locateUser();
-			}
-		});
-
-		/** Creamos el botón flotante para geolocalización. */ 
-		/**	y el listener para cuando es presionado */
+		setupMapView();
 
 		locationButton = (FloatingActionButton) findViewById(R.id.locationButton);
-		locationButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				locateUser();
-			}
-		});
-
-		/** Y creamos los marcadores, llamando a otra clase para
-		 * cargar el GeoJSON */
-		new LoadMarkers().execute();
+		setupButtons();
     }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main_menu, menu);
+		return true;
+	}
 
 	@Override
     public void onResume() {
@@ -120,6 +113,32 @@ public class DUALC extends AppCompatActivity
 			}
 		});
 		map.setMyLocationEnabled(true);
+	}
+
+	// Prepara el mapa
+	private void setupMapView() {
+		mapView.getMapAsync(new OnMapReadyCallback() {
+			@Override
+			public void onMapReady(MapboxMap mapboxMap) {
+				map = mapboxMap;
+				/** Cuando el mapa está listo, movemos la cámara al punto actual. **/
+				//locateUser();
+			}
+		});
+
+		/** Y creamos los marcadores, llamando a otra clase para
+		 * cargar el GeoJSON */
+		new LoadMarkers().execute();
+	}
+
+	// Añade los Floating Action Buttons
+	private void setupButtons() {
+		locationButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				locateUser();
+			}
+		});
 	}
 
 	private class LoadMarkers extends AsyncTask<Void, Void, String>

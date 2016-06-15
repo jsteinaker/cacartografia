@@ -2,4 +2,5 @@
 <resources>
 	<string name="app_name">De Ushuaia a La Caca</string>
 	<string name="searchBarHint">Search...</string>
+	<string name="about">Information</string>
 </resources>
