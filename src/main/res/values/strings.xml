@@ -3,4 +3,5 @@
 	<string name="app_name">De Ushuaia a La Caca</string>
 	<string name="searchBarHint">Search...</string>
 	<string name="about">Information</string>
+	<string name="credits">De Ushuaia a La Caca, Anales de la cartografía. Made with love by Javier Steinaker, hoping that everyone can find a proper public toilet when in need.</string>
 </resources>
