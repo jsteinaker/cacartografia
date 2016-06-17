@@ -34,30 +34,27 @@ import org.json.JSONObject;
 
 public class FragmentMap extends Fragment {
 	
-    private MapView mapView;
+	View fragmentView;
+	private MapView mapView;
 	private MapboxMap map;
 	FloatingActionButton locationButton;
 	LocationServices locationServices;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.map, container, false);
+		if (fragmentView == null)
+		{
+			fragmentView = inflater.inflate(R.layout.map, container, false);
+			mapView = (MapView) fragmentView.findViewById(R.id.mapView);
+			mapView.onCreate(savedInstanceState);
+			setupMapView();
+			locationButton = (FloatingActionButton) fragmentView.findViewById(R.id.locationButton);
+			setupButtons();
+		}
+
+		return fragmentView;
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState)
-	{
-		super.onActivityCreated(savedInstanceState);
-		
-		mapView = (MapView) getView().findViewById(R.id.mapView);
-		mapView.onCreate(savedInstanceState);
-		setupMapView();
-
-		locationButton = (FloatingActionButton) getView().findViewById(R.id.locationButton);
-		setupButtons();
-	}
-
-	
 	// Prepara el mapa
 	private void setupMapView() {
 		mapView.getMapAsync(new OnMapReadyCallback() {
