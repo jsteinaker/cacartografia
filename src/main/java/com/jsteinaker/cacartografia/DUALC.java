@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 public class DUALC extends AppCompatActivity
 {
+	FragmentManager fragmentManager;
+	
 	/** Called when the activity is first created. */
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -17,8 +21,26 @@ public class DUALC extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		
+		fragmentManager = getSupportFragmentManager();
+			
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+
+		fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            public void onBackStackChanged() {
+				Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_frame);
+				if (fragment instanceof AboutFragment)
+				{
+					getSupportActionBar().setHomeButtonEnabled(true);
+					getSupportActionBar().setTitle(R.string.about);
+				}
+				else if (fragment instanceof FragmentMap)
+				{
+					getSupportActionBar().setHomeButtonEnabled(false);
+					getSupportActionBar().setTitle(R.string.app_name);
+				}
+			}
+        });
 
 		FragmentMap fragmentMap = new FragmentMap();
 		getSupportFragmentManager().beginTransaction().add(R.id.fragment_frame, fragmentMap).commit();
