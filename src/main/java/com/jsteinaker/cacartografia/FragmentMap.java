@@ -3,7 +3,6 @@ package com.jsteinaker.cacartografia;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -144,12 +143,16 @@ public class FragmentMap extends Fragment {
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				for (DataSnapshot marker : dataSnapshot.getChildren())
 				{
-					LatLng location = new LatLng(marker.child("geometry").child("coordinates").child("1").getValue(Double.class),
-												marker.child("geometry").child("coordinates").child("0").getValue(Double.class));
+					LatLng location = new LatLng(marker.child("geometry").
+						child("coordinates").child("1").getValue(Double.class),
+						marker.child("geometry").child("coordinates").
+						child("0").getValue(Double.class));
 					
 					map.addMarker(new MarkerOptions().
-						title(marker.child("properties").child("title").getValue(String.class)).
-						snippet(marker.child("properties").child("description").getValue(String.class)).
+						title(marker.child("properties").child("title").
+							getValue(String.class)).
+						snippet(marker.child("properties").child("description").
+							getValue(String.class)).
 						position(location).icon(markerIcon));
 					
 				}
