@@ -17,6 +17,12 @@ import java.io.InputStreamReader;
 import java.lang.Exception;
 import java.lang.StringBuilder;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -28,10 +34,6 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class FragmentMap extends Fragment {
 	
 	View fragmentView;
@@ -39,6 +41,7 @@ public class FragmentMap extends Fragment {
 	private MapboxMap map;
 	FloatingActionButton locationButton;
 	LocationServices locationServices;
+	private DatabaseReference database;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,9 +72,7 @@ public class FragmentMap extends Fragment {
 		/* Inicializamos los Location Services */
 		locationServices = LocationServices.getLocationServices(getActivity());
 
-		/** Y creamos los marcadores, llamando a otra clase para
-		 * cargar el GeoJSON */
-		new LoadMarkers(getActivity()).execute();
+		LoadMarkers();
 	}
 
 	// Añade los Floating Action Buttons
@@ -127,64 +128,38 @@ public class FragmentMap extends Fragment {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+	
+	public void LoadMarkers() {
+		database = FirebaseDatabase.getInstance().getReference();
 
-	private class LoadMarkers extends AsyncTask<Void, Void, String>
-	{
-		private Context mContext;
-		
-		public LoadMarkers (Context context)
-		{
-			mContext = context;
-		}
-		
-		@Override
-		protected String doInBackground(Void... args) {
-			final StringBuilder json = new StringBuilder();
-			try
-			{
-				InputStreamReader inputStreamReader = new InputStreamReader(mContext.getAssets().open("toilets.json"));
-				int read;
-				char[] buff = new char[1024];
-				while ((read = inputStreamReader.read(buff)) != -1)
-						{
-							json.append(buff, 0, read);
-						}
-			} catch (Exception e) {
-				Log.e("DUALC", "Exception loading GeoJSON: " + e.toString());
-			}
-	
-			return json.toString();
-		}
-	
-		@Override
-		protected void onPostExecute(String json) {
-	
-			// Creamos ícono a partir del drawable
-			IconFactory iconFactory = IconFactory.getInstance(getActivity());
-			Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.toilet);
-			Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
-			
-			try
-			{
-				Log.w("Sarasa", "Arrancando");
-				JSONObject intermediate = new JSONObject(json);
-				JSONArray features = intermediate.getJSONArray("features");
-				Log.w("Sarasa", "Array cargado");
-				for (int i = 0; i < features.length(); i++)
+		// Icono a partir de drawable
+		IconFactory iconFactory = IconFactory.getInstance(getActivity());
+		Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.toilet);
+		final Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
+
+		// Empieza lo bueno
+		database.child("features").addListenerForSingleValueEvent(
+			new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				for (DataSnapshot marker : dataSnapshot.getChildren())
 				{
-					JSONObject feature = features.getJSONObject(i);
-					JSONObject geometry = feature.getJSONObject("geometry");
-					JSONArray coordinates = geometry.getJSONArray("coordinates");
-					LatLng location = new LatLng(coordinates.getDouble(1),coordinates.getDouble(0));
-	
-					// Crea el marcador
-					JSONObject properties = feature.getJSONObject("properties");
-					map.addMarker(new MarkerOptions().title(properties.getString("title")).snippet(properties.getString("description")).position(location).icon(markerIcon));
+					LatLng location = new LatLng(marker.child("geometry").child("coordinates").child("1").getValue(Double.class),
+												marker.child("geometry").child("coordinates").child("0").getValue(Double.class));
+					
+					map.addMarker(new MarkerOptions().
+						title(marker.child("properties").child("title").getValue(String.class)).
+						snippet(marker.child("properties").child("description").getValue(String.class)).
+						position(location).icon(markerIcon));
+					
 				}
-			} catch (JSONException e) {
-				Log.e("DUALC", "Error processing JSON: " + e);
 			}
-		}
-	
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+				Log.w("DUALC", "getMarker:onCancelled", databaseError.toException());
+			}
+
+		});
 	}
 }

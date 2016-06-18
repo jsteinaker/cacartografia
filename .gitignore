@@ -33,3 +33,6 @@ captures/
 
 # Passwords, tokens, hashs, etc
 src/main/res/values/secrets.xml
+
+# Firebase and Google Services data
+google-services.json

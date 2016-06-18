@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
+		classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 apply plugin: 'android'
@@ -15,6 +16,7 @@ android {
 	defaultConfig {
 		minSdkVersion		15
 		targetSdkVersion	15
+		applicationId		"com.jsteinaker.cacartografia"
 	}
 
 	repositories {
@@ -24,6 +26,7 @@ android {
 		compile('com.mapbox.mapboxsdk:mapbox-android-sdk:4.1.0-beta.1@aar') {
 			transitive=true
 		}
+		compile('com.google.firebase:firebase-database:9.0.2')
 	}
 
     buildTypes {
@@ -31,3 +34,5 @@ android {
         }
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
