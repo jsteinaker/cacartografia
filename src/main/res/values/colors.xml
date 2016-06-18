@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/mapboxBlue</color>
-    <color name="colorPrimaryDark">@color/mapboxBlueDark</color>
+    <color name="colorPrimary">@color/mapboxGreen</color>
+    <color name="colorPrimaryDark">@color/mapboxGreen</color>
     <color name="colorAccent">@color/mapboxGreen</color>
     
     <color name="materialGrey">#F5F5F5</color>
