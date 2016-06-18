@@ -31,13 +31,18 @@ public class DUALC extends AppCompatActivity
 				Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_frame);
 				if (fragment instanceof AboutFragment)
 				{
-					getSupportActionBar().setHomeButtonEnabled(true);
+					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 					getSupportActionBar().setTitle(R.string.about);
 				}
 				else if (fragment instanceof FragmentMap)
 				{
-					getSupportActionBar().setHomeButtonEnabled(false);
+					getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 					getSupportActionBar().setTitle(R.string.app_name);
+				}
+				else if (fragment instanceof AddMarkerFragment)
+				{
+					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+					getSupportActionBar().setTitle(R.string.addMarker);
 				}
 			}
         });
@@ -55,10 +60,20 @@ public class DUALC extends AppCompatActivity
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		if (menuItem.getItemId() == R.id.about) {
+		// Recupera el fragmento anterior si se presiona Home (Back)
+		if (menuItem.getItemId() == android.R.id.home)
+		{
+			getSupportFragmentManager().popBackStack();
+		}
+		else if (menuItem.getItemId() == R.id.about) {
 			AboutFragment aboutFragment = new AboutFragment();
 			getSupportFragmentManager().beginTransaction()
 				.replace(R.id.fragment_frame, aboutFragment).addToBackStack(null).commit();
+		}
+		else if (menuItem.getItemId() == R.id.addMarker) {
+			AddMarkerFragment addMarkerFragment = new AddMarkerFragment();
+			getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
 		}
 		return super.onOptionsItemSelected(menuItem);
 	}
