@@ -45,6 +45,13 @@ public class FragmentMap extends Fragment {
 	LocationServices locationServices;
 	private DatabaseReference database;
 	Marker newMarker;
+	Bundle instanceStateCopy;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		instanceStateCopy = savedInstanceState;
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -172,10 +179,12 @@ public class FragmentMap extends Fragment {
         mapView.onDestroy();
     }
 
-    @Override
+	@Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+		if (mapView != null) {
+        	mapView.onSaveInstanceState(outState);
+		}
     }
 	
 	public void loadMarkers() {

@@ -15,11 +15,11 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class DUALC extends AppCompatActivity implements OnFragmentInteractionListener
 {
 	FragmentManager fragmentManager;
+	FragmentMap fragmentMap;
 	
 	/** Called when the activity is first created. */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		
@@ -49,8 +49,15 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 			}
         });
 
-		FragmentMap fragmentMap = new FragmentMap();
-		getSupportFragmentManager().beginTransaction().add(R.id.fragment_frame, fragmentMap, "MAIN_MAP").commit();
+		if (savedInstanceState == null)
+		{
+			fragmentMap = new FragmentMap();
+			fragmentManager.beginTransaction().add(R.id.fragment_frame, fragmentMap, "MAIN_MAP").commit();
+		}
+		else
+		{
+			fragmentMap = (FragmentMap) fragmentManager.findFragmentByTag("MAIN_MAP");
+		}
 
     }
 
@@ -88,7 +95,6 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 
 	@Override
 	public void onAddMarker(Point marker) {
-		FragmentMap fragmentMap = (FragmentMap) fragmentManager.findFragmentByTag("MAIN_MAP");
 		fragmentMap.addMarker(marker);
 		fragmentManager.popBackStack();
 	}
