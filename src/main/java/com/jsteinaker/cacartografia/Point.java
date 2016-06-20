@@ -2,13 +2,13 @@ package com.jsteinaker.cacartografia;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-public class Marker {
+public class Point {
 	private String title;
 	private String snippet;
 	private LatLng location;
 
 	// Constructor
-	public Marker(String title, String snippet, LatLng location) {
+	public Point(String title, String snippet, LatLng location) {
 		this.title = title;
 		this.snippet = snippet;
 		this.location = location;

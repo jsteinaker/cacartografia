@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -41,6 +42,7 @@ public class FragmentMap extends Fragment {
 	FloatingActionButton locationButton;
 	LocationServices locationServices;
 	private DatabaseReference database;
+	Marker newMarker;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,19 +61,57 @@ public class FragmentMap extends Fragment {
 
 	// Prepara el mapa
 	private void setupMapView() {
+		newMarker = null;
 		mapView.getMapAsync(new OnMapReadyCallback() {
 			@Override
 			public void onMapReady(MapboxMap mapboxMap) {
 				map = mapboxMap;
-				/** Cuando el mapa está listo, movemos la cámara al punto actual. **/
-				//locateUser();
-			}
+				// Icono a partir de drawable
+				IconFactory iconFactory = IconFactory.getInstance(getActivity());
+				Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_marker);
+				final Icon addMarkerIcon = iconFactory.fromDrawable(iconDrawable);
+				/* Y el listener para los clicks "largos" que añaden el lugar */
+				map.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
+					@Override
+					public void onMapLongClick(LatLng point) {
+						if (newMarker != null)
+						{
+							map.removeMarker(newMarker);
+						}
+						newMarker = map.addMarker(new MarkerOptions().position(point));
+					}
+				});
+				/* También un listener para que los clicks comunes "limpien" el nuevo marcador */
+				map.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+					@Override
+					public void onMapClick(LatLng point) {
+						if (newMarker != null)
+						{
+							map.removeMarker(newMarker);
+						}
+					}
+				});
+				/* Y un listener para verificar cuando el usuario clickea sobre el nuevo marcador */
+				map.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+					@Override
+					public boolean onMarkerClick(Marker marker) {
+						if (marker == newMarker)
+						{
+							((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition());
+							return true;
+						}
+						return false;
+					}
+				});
+
+				/* Inicializamos los Location Services */
+				locationServices = LocationServices.getLocationServices(getActivity());
+
+				/* Cargamos marcadores */
+				LoadMarkers();
+
+				}
 		});
-
-		/* Inicializamos los Location Services */
-		locationServices = LocationServices.getLocationServices(getActivity());
-
-		LoadMarkers();
 	}
 
 	// Añade los Floating Action Buttons
@@ -132,9 +172,9 @@ public class FragmentMap extends Fragment {
 		database = FirebaseDatabase.getInstance().getReference();
 
 		// Icono a partir de drawable
-		IconFactory iconFactory = IconFactory.getInstance(getActivity());
-		Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.toilet);
-		final Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
+		//IconFactory iconFactory = IconFactory.getInstance(getActivity());
+		//Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.toilet);
+		//final Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
 
 		// Empieza lo bueno
 		database.child("features").addListenerForSingleValueEvent(
@@ -152,8 +192,7 @@ public class FragmentMap extends Fragment {
 						title(marker.child("properties").child("title").
 							getValue(String.class)).
 						snippet(marker.child("properties").child("description").
-							getValue(String.class)).
-						position(location).icon(markerIcon));
+							getValue(String.class)).position(location));
 					
 				}
 			}

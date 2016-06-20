@@ -7,4 +7,5 @@
 	<string name="addMarker">Add Marker</string>
 	<string name="input_title">Title</string>
 	<string name="input_description">Description</string>
+	<string name="input_location">Location</string>
 </resources>

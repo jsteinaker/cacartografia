@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 public class DUALC extends AppCompatActivity
 {
 	FragmentManager fragmentManager;
@@ -76,5 +78,11 @@ public class DUALC extends AppCompatActivity
 				.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
 		}
 		return super.onOptionsItemSelected(menuItem);
+	}
+
+	public void loadAddNewMarkerFragment(LatLng location) {
+		AddMarkerFragment addMarkerFragment = new AddMarkerFragment(location);
+		getSupportFragmentManager().beginTransaction()
+			.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
 	}
 }
