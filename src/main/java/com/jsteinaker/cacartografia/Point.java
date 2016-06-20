@@ -1,38 +1,40 @@
 package com.jsteinaker.cacartografia;
 
-import com.mapbox.mapboxsdk.geometry.LatLng;
-
 public class Point {
-	private String title;
-	private String snippet;
-	private LatLng location;
+	private Geometry geometry;
+	private Properties properties;
+	private String type;
 
 	// Constructor
-	public Point(String title, String snippet, LatLng location) {
-		this.title = title;
-		this.snippet = snippet;
-		this.location = location;
+	public Point(Geometry geometry, Properties properties) {
+		this.geometry = geometry;
+		this.properties = properties;
+		this.type = "Feature";
 	}
 
 	// Getters
-	public String getTitle() {
-		return title;
+	public Geometry getGeometry() {
+		return geometry;
 	}
-	public String getSnippet() {
-		return snippet;
+
+	public Properties getProperties() {
+		return properties;
 	}
-	public LatLng getLocation() {
-		return location;
+
+	public String getType() {
+		return type;
 	}
 
 	// Setters
-	public void setTitle(String title) {
-		this.title = title;
+	public void setGeometry(Geometry geometry) {
+		this.geometry = geometry;
 	}
-	public void setSnippet(String snippet) {
-		this.snippet = snippet;
+
+	public void setProperties(Properties properties) {
+		this.properties = properties;
 	}
-	public void setLocation(LatLng location) {
-		this.location = location;
+
+	public void setType() {
+		this.type = "Feature";
 	}
 }

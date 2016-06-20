@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
@@ -48,6 +50,7 @@ public class FragmentMap extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (fragmentView == null)
 		{
+			setHasOptionsMenu(true);
 			fragmentView = inflater.inflate(R.layout.map, container, false);
 			mapView = (MapView) fragmentView.findViewById(R.id.mapView);
 			mapView.onCreate(savedInstanceState);
@@ -62,6 +65,7 @@ public class FragmentMap extends Fragment {
 	// Prepara el mapa
 	private void setupMapView() {
 		newMarker = null;
+		database = FirebaseDatabase.getInstance().getReference();
 		mapView.getMapAsync(new OnMapReadyCallback() {
 			@Override
 			public void onMapReady(MapboxMap mapboxMap) {
@@ -108,7 +112,7 @@ public class FragmentMap extends Fragment {
 				locationServices = LocationServices.getLocationServices(getActivity());
 
 				/* Cargamos marcadores */
-				LoadMarkers();
+				loadMarkers();
 
 				}
 		});
@@ -136,6 +140,12 @@ public class FragmentMap extends Fragment {
 			}
 			
 		map.setMyLocationEnabled(true);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.map_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 	
 	@Override
@@ -168,8 +178,7 @@ public class FragmentMap extends Fragment {
         mapView.onSaveInstanceState(outState);
     }
 	
-	public void LoadMarkers() {
-		database = FirebaseDatabase.getInstance().getReference();
+	public void loadMarkers() {
 
 		// Icono a partir de drawable
 		//IconFactory iconFactory = IconFactory.getInstance(getActivity());
@@ -203,5 +212,12 @@ public class FragmentMap extends Fragment {
 			}
 
 		});
+	}
+
+	public void addMarker(Point marker) {
+		String id = marker.getProperties().getId();
+		database.child("features").child(id).setValue(marker);
+		map.removeAnnotations();
+		loadMarkers();
 	}
 }

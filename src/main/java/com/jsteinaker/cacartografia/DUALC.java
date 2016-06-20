@@ -12,7 +12,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-public class DUALC extends AppCompatActivity
+public class DUALC extends AppCompatActivity implements OnFragmentInteractionListener
 {
 	FragmentManager fragmentManager;
 	
@@ -50,7 +50,7 @@ public class DUALC extends AppCompatActivity
         });
 
 		FragmentMap fragmentMap = new FragmentMap();
-		getSupportFragmentManager().beginTransaction().add(R.id.fragment_frame, fragmentMap).commit();
+		getSupportFragmentManager().beginTransaction().add(R.id.fragment_frame, fragmentMap, "MAIN_MAP").commit();
 
     }
 
@@ -84,5 +84,12 @@ public class DUALC extends AppCompatActivity
 		AddMarkerFragment addMarkerFragment = new AddMarkerFragment(location);
 		getSupportFragmentManager().beginTransaction()
 			.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
+	}
+
+	@Override
+	public void onAddMarker(Point marker) {
+		FragmentMap fragmentMap = (FragmentMap) fragmentManager.findFragmentByTag("MAIN_MAP");
+		fragmentMap.addMarker(marker);
+		fragmentManager.popBackStack();
 	}
 }
