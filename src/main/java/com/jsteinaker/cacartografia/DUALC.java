@@ -28,27 +28,6 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            public void onBackStackChanged() {
-				Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_frame);
-				if (fragment instanceof AboutFragment)
-				{
-					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-					getSupportActionBar().setTitle(R.string.about);
-				}
-				else if (fragment instanceof FragmentMap)
-				{
-					getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-					getSupportActionBar().setTitle(R.string.app_name);
-				}
-				else if (fragment instanceof AddMarkerFragment)
-				{
-					getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-					getSupportActionBar().setTitle(R.string.addMarker);
-				}
-			}
-        });
-
 		if (savedInstanceState == null)
 		{
 			fragmentMap = new FragmentMap();

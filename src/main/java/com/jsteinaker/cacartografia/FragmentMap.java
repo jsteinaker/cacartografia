@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,6 +67,10 @@ public class FragmentMap extends Fragment {
 			setupButtons();
 		}
 
+		// Modificaciones en la AppBar
+		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+		((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		
 		return fragmentView;
 	}
 
@@ -176,7 +181,9 @@ public class FragmentMap extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
+        if (mapView != null) {
+			mapView.onDestroy();
+		}
     }
 
 	@Override

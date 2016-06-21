@@ -2,6 +2,7 @@ package com.jsteinaker.cacartografia;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +22,7 @@ public class AddMarkerFragment extends Fragment {
 		position = location;
 	}
 
-	public AddMarkerFragment()
-	{
+	public AddMarkerFragment() {
 		position = null;
 	}
 
@@ -38,6 +38,10 @@ public class AddMarkerFragment extends Fragment {
 			textView.setText(position.getLatitude() + ";" + position.getLongitude());
 		}
 
+		// Modificaciones en la AppBar
+		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.addMarker);
+		((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
 		return fragmentView;
 	}
 
