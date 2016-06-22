@@ -51,6 +51,7 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 		// Recupera el fragmento anterior si se presiona Home (Back)
 		if (menuItem.getItemId() == android.R.id.home)
 		{
+			Utils.hideKeyboard(this);
 			getSupportFragmentManager().popBackStack();
 		}
 		else if (menuItem.getItemId() == R.id.about) {
@@ -58,10 +59,10 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 			getSupportFragmentManager().beginTransaction()
 				.replace(R.id.fragment_frame, aboutFragment).addToBackStack(null).commit();
 		}
-		else if (menuItem.getItemId() == R.id.addMarker) {
-			AddMarkerFragment addMarkerFragment = new AddMarkerFragment();
+		else if (menuItem.getItemId() == R.id.login) {
+			LoginFragment loginFragment = new LoginFragment();
 			getSupportFragmentManager().beginTransaction()
-				.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
+				.replace(R.id.fragment_frame, loginFragment).addToBackStack(null).commit();
 		}
 		return super.onOptionsItemSelected(menuItem);
 	}

@@ -4,10 +4,10 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".DUALC">
 
-	<item android:id="@+id/addMarker"
-		android:title="@string/addMarker"
+	<item android:id="@+id/login"
+		android:title="@string/login"
 		android:orderInCategory="1"
-		android:icon="@drawable/ic_add_marker"
+		android:icon="@drawable/ic_key"
 		app:showAsAction="ifRoom"
 		/>
 	<item android:id="@+id/about"
