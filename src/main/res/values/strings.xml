@@ -12,8 +12,7 @@
 	<string name="input_location">Location</string>
 	<string name="input_email">E-mail</string>
 	<string name="input_password">Password</string>
-	<string name="auth_failed">Authentication failed"</string>
-	<string name="auth_ok">Authenticated"</string>
+	<string name="auth_failed">Authentication failed</string>
 	<string name="logging">Logging in...</string>
-	<string name="required">Required.</string>
+	<string name="required">Required</string>
 </resources>

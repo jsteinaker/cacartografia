@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">De Ushuaia a La Caca</string>
+	<string name="searchBarHint">Buscar...</string>
+	<string name="about">Información</string>
+	<string name="credits">De Ushuaia a La Caca, Anales de la cartografía. Libre y gratuita, porque en el baño somos todos iguales. Si te resultó de utilidad, considerá contribuir cargando al mapa los lugares que conozcas: podés salvar más de un esfínter.</string> 
+	<string name="login">Entrar</string>
+	<string name="logout">Cerrar sesión</string>
+	<string name="addMarker">Agregar toilet</string>
+	<string name="input_title">Nombre</string>
+	<string name="input_description">Descripción</string>
+	<string name="input_location">Ubicación</string>
+	<string name="input_email">E-mail</string>
+	<string name="input_password">Contraseña</string>
+	<string name="auth_failed">Falló inicio de sesión</string>
+	<string name="logging">Iniciando sesión...</string>
+	<string name="required">Requerido</string>
+</resources>
