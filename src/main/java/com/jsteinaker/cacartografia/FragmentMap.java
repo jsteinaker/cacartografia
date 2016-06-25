@@ -19,6 +19,8 @@ import java.io.InputStreamReader;
 import java.lang.Exception;
 import java.lang.StringBuilder;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +49,8 @@ public class FragmentMap extends Fragment {
 	private DatabaseReference database;
 	Marker newMarker;
 	Bundle instanceStateCopy;
+	FirebaseUser user;
+	long lastMarkerId;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -113,8 +117,11 @@ public class FragmentMap extends Fragment {
 					public boolean onMarkerClick(Marker marker) {
 						if (marker == newMarker)
 						{
-							((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition());
-							return true;
+							user = FirebaseAuth.getInstance().getCurrentUser();
+							if (user != null) {
+								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition());
+								return true;
+							}
 						}
 						return false;
 					}
@@ -220,6 +227,7 @@ public class FragmentMap extends Fragment {
 							getValue(String.class)).position(location));
 					
 				}
+				lastMarkerId = dataSnapshot.getChildrenCount() - 1;
 			}
 
 			@Override
@@ -231,8 +239,8 @@ public class FragmentMap extends Fragment {
 	}
 
 	public void addMarker(Point marker) {
-		String id = marker.getProperties().getId();
-		database.child("features").child(id).setValue(marker);
+		long id = lastMarkerId + 1;
+		database.child("features").child(Long.toString(id)).setValue(marker);
 		map.removeAnnotations();
 		loadMarkers();
 	}

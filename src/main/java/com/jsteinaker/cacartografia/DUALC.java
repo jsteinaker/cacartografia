@@ -16,6 +16,7 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 {
 	FragmentManager fragmentManager;
 	FragmentMap fragmentMap;
+	LoginFragment loginFragment;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -60,7 +61,9 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 				.replace(R.id.fragment_frame, aboutFragment).addToBackStack(null).commit();
 		}
 		else if (menuItem.getItemId() == R.id.login) {
-			LoginFragment loginFragment = new LoginFragment();
+			if (loginFragment == null) {
+				loginFragment = new LoginFragment();
+			}
 			getSupportFragmentManager().beginTransaction()
 				.replace(R.id.fragment_frame, loginFragment).addToBackStack(null).commit();
 		}
@@ -68,7 +71,8 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 	}
 
 	public void loadAddNewMarkerFragment(LatLng location) {
-		AddMarkerFragment addMarkerFragment = new AddMarkerFragment(location);
+		AddMarkerFragment addMarkerFragment = new AddMarkerFragment();
+		addMarkerFragment.setLocation(location);
 		getSupportFragmentManager().beginTransaction()
 			.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
 	}
@@ -76,6 +80,11 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 	@Override
 	public void onAddMarker(Point marker) {
 		fragmentMap.addMarker(marker);
+		fragmentManager.popBackStack();
+	}
+
+	@Override
+	public void onLoginCorrect() {
 		fragmentManager.popBackStack();
 	}
 }

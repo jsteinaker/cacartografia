@@ -3,6 +3,7 @@ package com.jsteinaker.cacartografia;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,20 +18,18 @@ public class AddMarkerFragment extends Fragment {
 	View fragmentView;
 	LatLng position;
 	OnFragmentInteractionListener interactionListener;
-
-	public AddMarkerFragment(LatLng location) {
-		position = location;
-	}
-
-	public AddMarkerFragment() {
-		position = null;
-	}
+	TextView mTitleField;
+	TextView mDescriptionField;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
 		interactionListener = (OnFragmentInteractionListener) getActivity();
 		fragmentView = inflater.inflate(R.layout.add_marker, container, false);
+
+		// Referencias a los campos de texto
+		mTitleField = (TextView) fragmentView.findViewById(R.id.input_title);
+		mDescriptionField = (TextView) fragmentView.findViewById(R.id.input_description);
 
 		if (position != null)
 		{
@@ -55,11 +54,14 @@ public class AddMarkerFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		if (menuItem.getItemId() == R.id.done)
 		{
+			// Terminar inmediatamente si faltan completar campos.
+			if (!validateForm()) {
+				return false;
+			}
+				
 			Utils.hideKeyboard(getActivity());
-			TextView textView = (TextView) fragmentView.findViewById(R.id.input_title);
-			String title = textView.getText().toString();
-			textView = (TextView) fragmentView.findViewById(R.id.input_description);
-			String description = textView.getText().toString();
+			String title = mTitleField.getText().toString();
+			String description = mDescriptionField.getText().toString();
 			String id = "ID" + title;
 			Geometry geometry = new Geometry(position);
 			Properties properties = new Properties(id, title, description);
@@ -68,5 +70,31 @@ public class AddMarkerFragment extends Fragment {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean validateForm() {
+        boolean valid = true;
+
+        String title = mTitleField.getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            mTitleField.setError(getText(R.string.required));
+            valid = false;
+        } else {
+            mTitleField.setError(null);
+        }
+
+        String description = mDescriptionField.getText().toString();
+        if (TextUtils.isEmpty(description)) {
+            mDescriptionField.setError(getText(R.string.required));
+            valid = false;
+        } else {
+            mDescriptionField.setError(null);
+        }
+
+        return valid;
+	}
+
+	public void setLocation(LatLng location) {
+		position = location;
 	}
 }

@@ -31,6 +31,23 @@ public class LoginFragment extends BaseFragment {
 	private EditText mPasswordField;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		auth = FirebaseAuth.getInstance();
+
+		authListener = new FirebaseAuth.AuthStateListener() {
+			@Override
+			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+				user = firebaseAuth.getCurrentUser();
+				
+				/* Actualizamos la interfaz cuando haya logueo o deslogueo */
+				updateUI(user);
+			}
+		};
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
 		interactionListener = (OnFragmentInteractionListener) getActivity();
@@ -43,23 +60,6 @@ public class LoginFragment extends BaseFragment {
 		// Modificaciones en la AppBar
 		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.login);
 		((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		auth = FirebaseAuth.getInstance();
-		authListener = new FirebaseAuth.AuthStateListener() {
-			@Override
-			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-				user = firebaseAuth.getCurrentUser();
-				if (user != null) {
-					Log.d("DUALC", "Logueado");
-				}
-				else
-				{
-					Log.d("DUALC", "Sin loguear");
-				}
-				/* Actualizamos la interfaz cuando haya logueo o deslogueo */
-				updateUI(user);
-			}
-		};
 
 		/* Listener para el botón de logueo/deslogueo */
 		Button btn = (Button) fragmentView.findViewById(R.id.login_logout);
@@ -130,6 +130,9 @@ public class LoginFragment extends BaseFragment {
 				public void onComplete(@NonNull Task<AuthResult> task) {
 					/*Ocultar el diálogo de progreso y liberar la interfaz */
 					hideProgressDialog();
+					if (user != null) {
+						interactionListener.onLoginCorrect();
+					}
 				}
 			});
 	}

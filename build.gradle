@@ -17,6 +17,8 @@ android {
 		minSdkVersion		15
 		targetSdkVersion	15
 		applicationId		"com.jsteinaker.cacartografia"
+		versionCode			1
+		versionName			"0.1 alpha"
 	}
 
 	repositories {
