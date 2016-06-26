@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/add_marker_layout"
 	android:layout_width="match_parent"
@@ -8,45 +8,55 @@
 	android:layout_marginTop="?attr/actionBarSize"
 	android:orientation="vertical"
 	android:paddingLeft="20dp"
-	android:paddingRight="20dp">
+	android:paddingRight="20dp"
+	android:fillViewport="true">
 
-	<android.support.design.widget.TextInputLayout
-		android:id="@+id/input_title_layout"
+	<TableLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="match_parent"
+		android:stretchColumns="1">
 
-		<EditText
-			android:id="@+id/input_title"
-			android:hint="@string/input_title"
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/input_title_layout"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			/>
-	</android.support.design.widget.TextInputLayout>
-	
-	<android.support.design.widget.TextInputLayout
-		android:id="@+id/input_description_layout"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+			android:layout_height="wrap_content">
 
-		<EditText
-			android:id="@+id/input_description"
-			android:hint="@string/input_description"
+			<EditText
+				android:id="@+id/input_title"
+				android:hint="@string/input_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:inputType="textCapSentences"
+				android:maxLines="1"
+				/>
+		</android.support.design.widget.TextInputLayout>
+		
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/input_description_layout"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			/>
-	</android.support.design.widget.TextInputLayout>
-	
-	<android.support.design.widget.TextInputLayout
-		android:id="@+id/input_location_layout"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+			android:layout_height="wrap_content">
 
-		<EditText
-			android:id="@+id/input_location"
-			android:hint="@string/input_location"
+			<EditText
+				android:id="@+id/input_description"
+				android:hint="@string/input_description"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:inputType="textCapSentences|textMultiLine"
+				/>
+		</android.support.design.widget.TextInputLayout>
+		
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/input_location_layout"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:enabled="false"
-			/>
-	</android.support.design.widget.TextInputLayout>
-</LinearLayout>
+			android:layout_height="wrap_content">
+
+			<EditText
+				android:id="@+id/input_location"
+				android:hint="@string/input_location"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:enabled="false"
+				/>
+		</android.support.design.widget.TextInputLayout>
+	</TableLayout>
+</ScrollView>

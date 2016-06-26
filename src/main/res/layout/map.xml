@@ -12,6 +12,7 @@
 		android:layout_height="match_parent"
 		mapbox:style_url="@string/mapboxStyleUrl"
 		mapbox:access_token="@string/mapboxAccessToken"
+		mapbox:attribution_enabled="false"
 		/>
 	
 	<android.support.design.widget.FloatingActionButton
