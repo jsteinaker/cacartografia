@@ -1,5 +1,8 @@
 package com.jsteinaker.cacartografia;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class Point {
 	private Geometry geometry;
 	private Properties properties;
@@ -10,6 +13,10 @@ public class Point {
 		this.geometry = geometry;
 		this.properties = properties;
 		this.type = "Feature";
+	}
+
+	// Constructor sin argumentos, para Firebase
+	public Point() {
 	}
 
 	// Getters

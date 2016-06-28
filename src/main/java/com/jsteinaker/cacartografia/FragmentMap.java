@@ -18,6 +18,7 @@ import android.util.Log;
 import java.io.InputStreamReader;
 import java.lang.Exception;
 import java.lang.StringBuilder;
+import java.util.ArrayList;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.ValueEventListener;
 
 import com.mapbox.mapboxsdk.annotations.Icon;
@@ -50,12 +52,13 @@ public class FragmentMap extends Fragment {
 	Marker newMarker;
 	Bundle instanceStateCopy;
 	FirebaseUser user;
-	long lastMarkerId;
+	long nextMarkerId;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		instanceStateCopy = savedInstanceState;
+		nextMarkerId = 0;
 	}
 	
 	@Override
@@ -209,6 +212,7 @@ public class FragmentMap extends Fragment {
 		//final Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
 
 		// Empieza lo bueno
+		/***************************************************************
 		database.child("features").addListenerForSingleValueEvent(
 			new ValueEventListener() {
 			@Override
@@ -227,21 +231,66 @@ public class FragmentMap extends Fragment {
 							getValue(String.class)).position(location));
 					
 				}
-				lastMarkerId = dataSnapshot.getChildrenCount() - 1;
+				nextMarkerId = dataSnapshot.getChildrenCount();
 			}
 
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
-				Log.w("DUALC", "getMarker:onCancelled", databaseError.toException());
+				Log.w("DUALC", "getMarkers:onCancelled", databaseError.toException());
 			}
 
+		});
+		****************************************************************/
+
+		/* Ponemos listeners para responder a los cambios que puedan ocurrir en
+		 * la base de datos (nuevo marcador, marcador suprimido, etc.) */
+		database.child("features").addChildEventListener(new ChildEventListener() {
+			/* Nuevo marcador */
+			@Override
+			public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+				Log.w("DUALC", "Antes de getValue");
+				Point marker = dataSnapshot.getValue(Point.class);
+				Log.w("DUALC", "Despues de getValue");
+				drawNewMarker(marker);
+			}
+
+			/* Marcador modificado */
+			@Override
+			public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+			}
+
+			/* Marcador movido */
+			@Override
+			public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+			}
+
+			/* Marcador eliminado */
+			@Override
+			public void onChildRemoved(DataSnapshot dataSnapshot) {
+				Point marker = dataSnapshot.getValue(Point.class);
+				removeDeletedMarker(marker);
+			}
+			
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+				Log.w("DUALC", "ChildEventListener:onCancelled", databaseError.toException());
+			}
 		});
 	}
 
 	public void addMarker(Point marker) {
-		long id = lastMarkerId + 1;
-		database.child("features").child(Long.toString(id)).setValue(marker);
-		map.removeAnnotations();
-		loadMarkers();
+		database.child("features").child(Long.toString(nextMarkerId)).setValue(marker);
+	}
+
+	public void drawNewMarker(Point marker) {
+		Properties properties = marker.getProperties();
+		Geometry geometry = marker.getGeometry();
+		map.addMarker(new MarkerOptions().title(properties.getTitle())
+				.snippet(properties.getDescription())
+				.position(geometry.getCoordinatesInLatLng()));
+		nextMarkerId++;
+	}
+
+	public void removeDeletedMarker(Point marker) {
 	}
 }

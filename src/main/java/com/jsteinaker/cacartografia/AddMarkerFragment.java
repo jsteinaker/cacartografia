@@ -63,7 +63,8 @@ public class AddMarkerFragment extends Fragment {
 			String title = mTitleField.getText().toString();
 			String description = mDescriptionField.getText().toString();
 			String id = "ID" + title;
-			Geometry geometry = new Geometry(position);
+			Geometry geometry = new Geometry();
+			geometry.setCoordinatesFromLatLng(position);
 			Properties properties = new Properties(id, title, description);
 			Point marker = new Point(geometry, properties);
 			interactionListener.onAddMarker(marker);
@@ -94,6 +95,9 @@ public class AddMarkerFragment extends Fragment {
         return valid;
 	}
 
+	/* Android no recomienda sobrecargar los constructores de los fragmentos.
+	 * Como necesitamos pasar la ubicación exacta al momento de crearlo, creamos
+	 * una función pública, que usualmente se llama junto con el constructor. */
 	public void setLocation(LatLng location) {
 		position = location;
 	}

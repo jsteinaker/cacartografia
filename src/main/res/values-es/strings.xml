@@ -15,4 +15,5 @@
 	<string name="auth_failed">Falló inicio de sesión</string>
 	<string name="logging">Iniciando sesión...</string>
 	<string name="required">Requerido</string>
+	<string name="network_error">Error de red</string>
 </resources>

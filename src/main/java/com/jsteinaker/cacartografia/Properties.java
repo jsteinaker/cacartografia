@@ -1,5 +1,8 @@
 package com.jsteinaker.cacartografia;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class Properties {
 	private String description;
 	private String id;
@@ -9,6 +12,10 @@ public class Properties {
 		setId(id);
 		setTitle(title);
 		setDescription(description);
+	}
+
+	/* Constructor sin argumentos, para Firebase */
+	public Properties() {
 	}
 
 	public String getId() {
