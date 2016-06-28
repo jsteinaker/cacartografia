@@ -18,7 +18,6 @@ import android.util.Log;
 import java.io.InputStreamReader;
 import java.lang.Exception;
 import java.lang.StringBuilder;
-import java.util.ArrayList;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

@@ -2,6 +2,7 @@ package com.jsteinaker.cacartografia;
 
 import java.util.ArrayList;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -24,6 +25,7 @@ public class Geometry {
 		return coordinates;
 	}
 
+	@Exclude
 	public LatLng getCoordinatesInLatLng() {
 		LatLng latLng = new LatLng(coordinates.get(1), coordinates.get(0));
 		return latLng;
@@ -37,6 +39,7 @@ public class Geometry {
 		this.coordinates = coordinates;
 	}
 
+	@Exclude
 	public void setCoordinatesFromLatLng(LatLng location) {
 		coordinates = new ArrayList<Double>();
 		coordinates.add(location.getLongitude());
