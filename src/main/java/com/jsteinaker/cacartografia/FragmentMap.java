@@ -18,6 +18,7 @@ import android.util.Log;
 import java.io.InputStreamReader;
 import java.lang.Exception;
 import java.lang.StringBuilder;
+import java.util.Hashtable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,7 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.ValueEventListener;
 
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -42,22 +43,27 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 public class FragmentMap extends Fragment {
 	
+	/* UI */
 	View fragmentView;
 	private MapView mapView;
 	private MapboxMap map;
 	FloatingActionButton locationButton;
+
+	/* Data */
 	LocationServices locationServices;
 	private DatabaseReference database;
 	Marker newMarker;
 	Bundle instanceStateCopy;
 	FirebaseUser user;
 	long nextMarkerId;
+	Hashtable<String, Long> idTable;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		instanceStateCopy = savedInstanceState;
 		nextMarkerId = 0;
+		idTable = new Hashtable<String, Long>();
 	}
 	
 	@Override
@@ -80,7 +86,7 @@ public class FragmentMap extends Fragment {
 		return fragmentView;
 	}
 
-	// Prepara el mapa
+	/* Prepara el mapa */
 	private void setupMapView() {
 		newMarker = null;
 		database = FirebaseDatabase.getInstance().getReference();
@@ -111,6 +117,7 @@ public class FragmentMap extends Fragment {
 						{
 							map.removeMarker(newMarker);
 						}
+						newMarker = null;
 					}
 				});
 				/* Y un listener para verificar cuando el usuario clickea sobre el nuevo marcador */
@@ -211,7 +218,7 @@ public class FragmentMap extends Fragment {
 		//final Icon markerIcon = iconFactory.fromDrawable(iconDrawable);
 
 		// Empieza lo bueno
-		/***************************************************************
+		/* **************************************************************
 		database.child("features").addListenerForSingleValueEvent(
 			new ValueEventListener() {
 			@Override
@@ -239,7 +246,7 @@ public class FragmentMap extends Fragment {
 			}
 
 		});
-		****************************************************************/
+		*************************************************************** */
 
 		/* Ponemos listeners para responder a los cambios que puedan ocurrir en
 		 * la base de datos (nuevo marcador, marcador suprimido, etc.) */
@@ -247,10 +254,8 @@ public class FragmentMap extends Fragment {
 			/* Nuevo marcador */
 			@Override
 			public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-				Log.w("DUALC", "Antes de getValue");
 				Point marker = dataSnapshot.getValue(Point.class);
-				Log.w("DUALC", "Despues de getValue");
-				drawNewMarker(marker);
+				drawNewMarker(marker, dataSnapshot.getKey());
 			}
 
 			/* Marcador modificado */
@@ -266,8 +271,7 @@ public class FragmentMap extends Fragment {
 			/* Marcador eliminado */
 			@Override
 			public void onChildRemoved(DataSnapshot dataSnapshot) {
-				Point marker = dataSnapshot.getValue(Point.class);
-				removeDeletedMarker(marker);
+				removeDeletedMarker(dataSnapshot.getKey());
 			}
 			
 			@Override
@@ -279,17 +283,25 @@ public class FragmentMap extends Fragment {
 
 	public void addMarker(Point marker) {
 		database.child("features").child(Long.toString(nextMarkerId)).setValue(marker);
+		/* Como el marcador ha quedado añadido al mapa, quitamos el marcador
+		 * provisional del mapa y limpiamos la referencia a newMarker para 
+		 * que al clickearlo no nos lleve a la pantalla de agregar marcador. */
+		map.removeMarker(newMarker);
+		newMarker = null;
 	}
 
-	public void drawNewMarker(Point marker) {
+	public void drawNewMarker(Point marker, String userId) {
 		Properties properties = marker.getProperties();
 		Geometry geometry = marker.getGeometry();
-		map.addMarker(new MarkerOptions().title(properties.getTitle())
+		Marker mapMarker = map.addMarker(new MarkerOptions().title(properties.getTitle())
 				.snippet(properties.getDescription())
 				.position(geometry.getCoordinatesInLatLng()));
+		idTable.put(userId, mapMarker.getId());
 		nextMarkerId++;
 	}
 
-	public void removeDeletedMarker(Point marker) {
+	public void removeDeletedMarker(String userId) {
+		map.removeAnnotation(idTable.get(userId));
+		idTable.remove(userId);
 	}
 }
