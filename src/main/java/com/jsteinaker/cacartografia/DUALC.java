@@ -60,6 +60,11 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 			getSupportFragmentManager().beginTransaction()
 				.replace(R.id.fragment_frame, aboutFragment).addToBackStack(null).commit();
 		}
+		else if (menuItem.getItemId() == R.id.help) {
+			HelpFragment helpFragment = new HelpFragment();
+			getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragment_frame, helpFragment).addToBackStack(null).commit();
+		}
 		else if (menuItem.getItemId() == R.id.login) {
 			if (loginFragment == null) {
 				loginFragment = new LoginFragment();

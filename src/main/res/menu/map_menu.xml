@@ -16,4 +16,10 @@
 		android:icon="@drawable/ic_info"
 		app:showAsAction="ifRoom"
 		/>
+	<item android:id="@+id/help"
+		android:title="@string/help"
+		android:orderInCategory="3"
+		android:icon="@drawable/ic_help"
+		android:showAsAction="ifRoom"
+		/>
 </menu>

@@ -96,8 +96,8 @@ public class FragmentMap extends Fragment {
 				map = mapboxMap;
 				// Icono a partir de drawable
 				IconFactory iconFactory = IconFactory.getInstance(getActivity());
-				Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_marker);
-				final Icon addMarkerIcon = iconFactory.fromDrawable(iconDrawable);
+				Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_new_marker);
+				final Icon newMarkerIcon = iconFactory.fromDrawable(iconDrawable);
 				/* Y el listener para los clicks "largos" que añaden el lugar */
 				map.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
 					@Override
@@ -106,7 +106,9 @@ public class FragmentMap extends Fragment {
 						{
 							map.removeMarker(newMarker);
 						}
-						newMarker = map.addMarker(new MarkerOptions().position(point));
+						newMarker = map.addMarker(new MarkerOptions()
+								.position(point)
+								.icon(newMarkerIcon));
 					}
 				});
 				/* También un listener para que los clicks comunes "limpien" el nuevo marcador */

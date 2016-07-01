@@ -16,4 +16,6 @@
 	<string name="logging">Logging in...</string>
 	<string name="required">Required</string>
 	<string name="network_error">Network error</string>
+	<string name="help_text">To add a new toilet, move the map to the desired zone (zoom to get more precise) and long press on the exact point in which you want to add it. A new marker with the plus sign will come up, press over it to complete the process. Remember: you have to be registered and logged in to be able to do this.</string>
+	<string name="help">Help</string>
 </resources>
