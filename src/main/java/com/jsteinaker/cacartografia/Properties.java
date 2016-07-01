@@ -7,11 +7,13 @@ public class Properties {
 	private String description;
 	private String id;
 	private String title;
+	private String owner;
 
-	public Properties(String id, String title, String description) {
+	public Properties(String id, String title, String description, String owner) {
 		setId(id);
 		setTitle(title);
 		setDescription(description);
+		setOwner(owner);
 	}
 
 	/* Constructor sin argumentos, para Firebase */
@@ -29,6 +31,10 @@ public class Properties {
 	public String getDescription() {
 		return description;
 	}
+
+	public String getOwner() {
+		return owner;
+	}
 	
 	public void setId(String id) {
 		this.id = id;
@@ -40,5 +46,9 @@ public class Properties {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 }

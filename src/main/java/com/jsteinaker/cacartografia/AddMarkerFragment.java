@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class AddMarkerFragment extends Fragment {
 	View fragmentView;
 	LatLng position;
@@ -63,9 +66,14 @@ public class AddMarkerFragment extends Fragment {
 			String title = mTitleField.getText().toString();
 			String description = mDescriptionField.getText().toString();
 			String id = "ID" + title;
+			FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+			if (user == null) {
+				return false;
+			}
+			String owner = user.getEmail();
 			Geometry geometry = new Geometry();
 			geometry.setCoordinatesFromLatLng(position);
-			Properties properties = new Properties(id, title, description);
+			Properties properties = new Properties(id, title, description, owner);
 			Point marker = new Point(geometry, properties);
 			interactionListener.onAddMarker(marker);
 			return true;
@@ -96,8 +104,8 @@ public class AddMarkerFragment extends Fragment {
 	}
 
 	/* Android no recomienda sobrecargar los constructores de los fragmentos.
-	 * Como necesitamos pasar la ubicación exacta al momento de crearlo, creamos
-	 * una función pública, que usualmente se llama junto con el constructor. */
+	 * Como necesitamos pasar la ubicación al momento de crearlo, creamos una
+	 * función pública, que usualmente se llama junto con el constructor. */
 	public void setLocation(LatLng location) {
 		position = location;
 	}
