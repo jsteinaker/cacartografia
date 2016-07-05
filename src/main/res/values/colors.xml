@@ -22,6 +22,5 @@
     <color name="mapboxPink">#ED6498</color>
     <color name="mapboxMustard">#FBB03B</color>
     <color name="mapboxNavy">#28353D</color>
-    <color name="mapboxNavyDark">#222B30</color>
-
+	<color name="mapboxNavyDark">#222B30</color>
 </resources>

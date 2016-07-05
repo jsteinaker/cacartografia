@@ -14,6 +14,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.InputStreamReader;
 import java.lang.Exception;
@@ -52,7 +54,7 @@ public class FragmentMap extends Fragment {
 	/* Data */
 	LocationServices locationServices;
 	private DatabaseReference database;
-	Marker newMarker;
+	DUALCMarker newMarker;
 	Bundle instanceStateCopy;
 	FirebaseUser user;
 	long nextMarkerId;
@@ -106,7 +108,7 @@ public class FragmentMap extends Fragment {
 						{
 							map.removeMarker(newMarker);
 						}
-						newMarker = map.addMarker(new MarkerOptions()
+						newMarker = (DUALCMarker) map.addMarker(new DUALCMarkerOptions()
 								.position(point)
 								.icon(newMarkerIcon));
 					}
@@ -135,6 +137,32 @@ public class FragmentMap extends Fragment {
 							}
 						}
 						return false;
+					}
+				});
+
+				/* Un adaptador para modificar las InfoWindow mostradas*/
+				map.setInfoWindowAdapter(new MapboxMap.InfoWindowAdapter() {
+					@Override
+					public View getInfoWindow(Marker marker) {
+						View infoWindow = LayoutInflater
+							.from(getActivity()).inflate(R.layout.info_window, null);
+						TextView tv = (TextView) infoWindow.findViewById(R.id.infowindow_title);
+						tv.setText(marker.getTitle());
+						tv = (TextView) infoWindow.findViewById(R.id.infowindow_description);
+						tv.setText(marker.getSnippet());
+						Button btn = (Button) infoWindow.findViewById(R.id.infowindow_editmarker);
+						/* Cast explícito necesario para poder usar getOwner */
+						DUALCMarker dualcMarker = (DUALCMarker) marker;
+						user = FirebaseAuth.getInstance().getCurrentUser();
+						/* Chequeo del usuario actual y el dueño del marcador,
+						 * si es el mismo puede editarlo */
+						if (user != null) {
+							String owner = user.getEmail();
+							if (dualcMarker.getOwner().equals(owner)) {
+								btn.setVisibility(View.VISIBLE);
+							}
+						}
+						return infoWindow;
 					}
 				});
 
@@ -295,9 +323,11 @@ public class FragmentMap extends Fragment {
 	public void drawNewMarker(Point marker, String userId) {
 		Properties properties = marker.getProperties();
 		Geometry geometry = marker.getGeometry();
-		Marker mapMarker = map.addMarker(new MarkerOptions().title(properties.getTitle())
+		DUALCMarker mapMarker = (DUALCMarker) map.addMarker(new DUALCMarkerOptions()
+				.title(properties.getTitle())
 				.snippet(properties.getDescription())
-				.position(geometry.getCoordinatesInLatLng()));
+				.position(geometry.getCoordinatesInLatLng())
+				.owner(properties.getOwner()));
 		idTable.put(userId, mapMarker.getId());
 		nextMarkerId++;
 	}

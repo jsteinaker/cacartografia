@@ -18,4 +18,5 @@
 	<string name="network_error">Error de red</string>
 	<string name="help_text">Para añadir un nuevo baño, desplácese hasta la zona del mapa deseada (haga zoom para obtener más precisión) y presione un instante en el punto exacto en el que quiera añadirlo. Aparecerá un nuevo marcador con el signo +, presione sobre él para completar el proceso. Recuerde que para poder hacer esto debe estar registrado y tener su sesión iniciada.</string>
 	<string name="help">Ayuda</string>
+	<string name="edit_marker">Editar marcador</string>
 </resources>
