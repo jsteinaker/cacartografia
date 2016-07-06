@@ -2,7 +2,7 @@
 
 <ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/add_marker_layout"
+	android:id="@+id/edit_marker_layout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:layout_marginTop="?attr/actionBarSize"
@@ -52,6 +52,20 @@
 
 			<EditText
 				android:id="@+id/input_location"
+				android:hint="@string/input_location"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:enabled="false"
+				/>
+		</android.support.design.widget.TextInputLayout>
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/input_id_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<EditText
+				android:id="@+id/input_id"
 				android:hint="@string/input_location"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

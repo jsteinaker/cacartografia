@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -75,16 +76,30 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 		return super.onOptionsItemSelected(menuItem);
 	}
 
-	public void loadAddNewMarkerFragment(LatLng location) {
+	public void loadAddNewMarkerFragment(LatLng location, String markerId) {
 		AddMarkerFragment addMarkerFragment = new AddMarkerFragment();
-		addMarkerFragment.setLocation(location);
+		addMarkerFragment.setParams(location, markerId);
 		getSupportFragmentManager().beginTransaction()
 			.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
 	}
 
+	public void loadEditMarkerFragment(DUALCMarker marker, String markerId) {
+		EditMarkerFragment editMarkerFragment = new EditMarkerFragment();
+		editMarkerFragment.setParams(marker.getPosition(),
+				marker.getTitle(), marker.getSnippet(), markerId);
+		getSupportFragmentManager().beginTransaction()
+			.replace(R.id.fragment_frame, editMarkerFragment).addToBackStack(null).commit(); 
+	}
+
 	@Override
-	public void onAddMarker(Point marker) {
-		fragmentMap.addMarker(marker);
+	public void onAddMarker(Point marker, String id) {
+		fragmentMap.addMarker(marker, id);
+		fragmentManager.popBackStack();
+	}
+
+	@Override
+	public void onEditMarker(Point marker, String id) {
+		fragmentMap.editMarker(marker, id);
 		fragmentManager.popBackStack();
 	}
 

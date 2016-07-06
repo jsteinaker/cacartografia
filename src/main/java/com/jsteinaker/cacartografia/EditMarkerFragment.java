@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-public class AddMarkerFragment extends BaseEditMarkerFragment {
-	
-	private View newFragmentView;
+public class EditMarkerFragment extends BaseEditMarkerFragment {
 
+	private View newFragmentView;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		newFragmentView = super.onCreateView(inflater, container, savedInstanceState);
@@ -21,9 +21,15 @@ public class AddMarkerFragment extends BaseEditMarkerFragment {
 		if (position != null) {
 			mLocationField.setText(position.getLatitude() + ";" + position.getLongitude());
 		}
+		if (title != null) {
+			mTitleField.setText(title);
+			if (description != null) {
+				mDescriptionField.setText(description);
+			}
+		}
 
 		/* Titulo de la AppBar */
-		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.addMarker);
+		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.edit_marker);
 
 		return newFragmentView;
 	}
@@ -31,16 +37,18 @@ public class AddMarkerFragment extends BaseEditMarkerFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		if (super.onOptionsItemSelected(menuItem) == true) {
-			interactionListener.onAddMarker(point, markerId);
+			interactionListener.onEditMarker(point, markerId);
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-
-	public void setParams(LatLng location, String id) {
+	
+	public void setParams(LatLng location, String title, String description, String id) {
 		position = location;
+		this.title = title;
+		this.description = description;
 		markerId = id;
 	}
 }

@@ -132,7 +132,7 @@ public class FragmentMap extends Fragment {
 						{
 							user = FirebaseAuth.getInstance().getCurrentUser();
 							if (user != null) {
-								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition());
+								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition(), ((Long)nextMarkerId).toString());
 								return true;
 							}
 						}
@@ -160,6 +160,13 @@ public class FragmentMap extends Fragment {
 							String owner = user.getEmail();
 							if (dualcMarker.getOwner().equals(owner)) {
 								btn.setVisibility(View.VISIBLE);
+								final DUALCMarker markerCopy = dualcMarker;
+								btn.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, ((Long)markerCopy.getId()).toString());
+									}
+								});
 							}
 						}
 						return infoWindow;
@@ -311,13 +318,17 @@ public class FragmentMap extends Fragment {
 		});
 	}
 
-	public void addMarker(Point marker) {
-		database.child("features").child(Long.toString(nextMarkerId)).setValue(marker);
+	public void addMarker(Point marker, String id) {
+		database.child("features").child(id).setValue(marker);
 		/* Como el marcador ha quedado añadido al mapa, quitamos el marcador
 		 * provisional del mapa y limpiamos la referencia a newMarker para 
 		 * que al clickearlo no nos lleve a la pantalla de agregar marcador. */
 		map.removeMarker(newMarker);
 		newMarker = null;
+	}
+
+	public void editMarker(Point marker, String id) {
+		database.child("features").child(id).setValue(marker);
 	}
 
 	public void drawNewMarker(Point marker, String userId) {
