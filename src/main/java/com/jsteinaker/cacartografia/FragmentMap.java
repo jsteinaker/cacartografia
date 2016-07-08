@@ -8,13 +8,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.InputStreamReader;
@@ -144,13 +145,19 @@ public class FragmentMap extends Fragment {
 				map.setInfoWindowAdapter(new MapboxMap.InfoWindowAdapter() {
 					@Override
 					public View getInfoWindow(Marker marker) {
-						View infoWindow = LayoutInflater
-							.from(getActivity()).inflate(R.layout.info_window, null);
+						DUALCInfoWindow infoWindow = (DUALCInfoWindow) LayoutInflater
+							.from(getActivity())
+							.inflate(R.layout.info_window, null);
+						/* Altura máxima de InfoWindow relativa a la altura del
+						 * mapa en pantalla */
+						infoWindow.setMaxHeight(mapView.getHeight());
 						TextView tv = (TextView) infoWindow.findViewById(R.id.infowindow_title);
 						tv.setText(marker.getTitle());
 						tv = (TextView) infoWindow.findViewById(R.id.infowindow_description);
 						tv.setText(marker.getSnippet());
-						Button btn = (Button) infoWindow.findViewById(R.id.infowindow_editmarker);
+						/* Se puede hacer scroll en la descripción */
+						tv.setMovementMethod(new ScrollingMovementMethod());
+						ImageButton btn = (ImageButton) infoWindow.findViewById(R.id.infowindow_editmarker);
 						/* Cast explícito necesario para poder usar getOwner */
 						DUALCMarker dualcMarker = (DUALCMarker) marker;
 						user = FirebaseAuth.getInstance().getCurrentUser();
