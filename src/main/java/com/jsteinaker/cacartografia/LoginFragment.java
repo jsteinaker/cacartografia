@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.lang.Exception;
@@ -21,6 +22,8 @@ import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import com.squareup.picasso.Picasso;
 
 public class LoginFragment extends BaseFragment {
 	
@@ -34,6 +37,7 @@ public class LoginFragment extends BaseFragment {
 	private View fragmentView;
 	private EditText mEmailField;
 	private EditText mPasswordField;
+	private ImageView avatar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class LoginFragment extends BaseFragment {
 		// Obtenemos referencia a los controles UI apenas inflado el layout
 		mEmailField = (EditText) fragmentView.findViewById(R.id.input_email);
 		mPasswordField = (EditText) fragmentView.findViewById(R.id.input_password);
+		avatar = (ImageView) fragmentView.findViewById(R.id.avatar);
 
 		// Modificaciones en la AppBar
 		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.login);
@@ -98,26 +103,6 @@ public class LoginFragment extends BaseFragment {
 		/* Y desregistrarlo cuando termina el fragmento */
 		auth.removeAuthStateListener(authListener);
 	}
-	
-	/* SIN MENU DE MOMENTO
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.login_menu, menu);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-	
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		if (menuItem.getItemId() == R.id.done)
-		{
-			Utils.hideKeyboard(getActivity());
-			logIn(mEmailField.getText().toString(), mPasswordField.getText.toString());
-			return true;
-		}
-		return false;
-	}
-	*/
 
 	private void logIn(String email, String password) {
 		/* Terminar inmediatamente si alguno de los campos está vacío */
@@ -163,11 +148,16 @@ public class LoginFragment extends BaseFragment {
 			fragmentView.findViewById(R.id.input_email_layout).setVisibility(View.GONE);
 			fragmentView.findViewById(R.id.input_password_layout).setVisibility(View.GONE);
 			((Button)fragmentView.findViewById(R.id.login_logout)).setText(R.string.logout);
+			avatar.setVisibility(View.VISIBLE);
+			String hash = Utils.md5hash(user.getEmail());
+			String gravatarURL = "http://www.gravatar.com/avatar/" + hash;
+			Picasso.with(getActivity()).load(gravatarURL).into(avatar);
 		}
 		else {
 			fragmentView.findViewById(R.id.input_email_layout).setVisibility(View.VISIBLE);
 			fragmentView.findViewById(R.id.input_password_layout).setVisibility(View.VISIBLE);
 			((Button)fragmentView.findViewById(R.id.login_logout)).setText(R.string.login);
+			avatar.setVisibility(View.GONE);
 		}
 	}
 
