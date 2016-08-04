@@ -195,11 +195,15 @@ public class FragmentMap extends Fragment {
 						{
 							user = FirebaseAuth.getInstance().getCurrentUser();
 							if (user != null) {
-								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition(), ((Long)nextMarkerId).toString());
+								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition(), nextMarkerId);
 								/* Quitamos del mapa el marcador provisional luego de lanzar el otro fragmento */
 								map.removeMarker(newMarker);
 								newMarker = null;
 								return true;
+							}
+							else {
+								newMarker.setTitle(getString(R.string.login_needed));
+								newMarker.setSnippet(getString(R.string.login_needed_message));
 							}
 						}
 						return false;
@@ -236,7 +240,8 @@ public class FragmentMap extends Fragment {
 								btn.setOnClickListener(new View.OnClickListener() {
 									@Override
 									public void onClick(View view) {
-										((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, ((Long)markerCopy.getId()).toString());
+										Long dualcId = markerCopy.getDualcId();
+										((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, dualcId);
 									}
 								});
 							}
@@ -296,16 +301,17 @@ public class FragmentMap extends Fragment {
 		map.setMyLocationEnabled(true);
 	}
 
-	public void drawNewMarker(Point marker, String userId) {
-		Properties properties = marker.getProperties();
-		Geometry geometry = marker.getGeometry();
+	public void drawNewMarker(Point point, String userId) {
+		Properties properties = point.getProperties();
+		Geometry geometry = point.getGeometry();
 		DUALCMarker mapMarker = (DUALCMarker) map.addMarker(new DUALCMarkerOptions()
 				.title(properties.getTitle())
 				.snippet(properties.getDescription())
 				.position(geometry.getCoordinatesInLatLng())
-				.owner(properties.getOwner()));
+				.owner(properties.getOwner())
+				.dualcId(point.getId()));
 		idTable.put(userId, mapMarker.getId());
-		nextMarkerId++;
+		nextMarkerId = point.getId() + 1;
 	}
 
 	public void removeDeletedMarker(String userId) {
@@ -317,6 +323,10 @@ public class FragmentMap extends Fragment {
 		route = map.addPolyline(new PolylineOptions()
 				.add(waypoints)
 				.width(5));
+	}
+
+	public void deselectMarkers() {
+		map.deselectMarkers();
 	}
 
 }

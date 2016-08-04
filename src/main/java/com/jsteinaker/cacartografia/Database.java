@@ -24,6 +24,11 @@ public class Database {
 		database.child("features").child(id).setValue(marker);
 	}
 
+	public void deleteMarker(String id) {
+		database.child("features").child(id).removeValue();
+	}
+		
+
 	public void setUpListeners() {
 		/* Ponemos listeners para responder a los cambios que puedan ocurrir en
 		 * la base de datos (nuevo marcador, marcador suprimido, etc.) */

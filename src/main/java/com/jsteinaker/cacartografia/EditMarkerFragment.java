@@ -1,11 +1,13 @@
 package com.jsteinaker.cacartografia;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -27,6 +29,18 @@ public class EditMarkerFragment extends BaseEditMarkerFragment {
 				mDescriptionField.setText(description);
 			}
 		}
+		
+		/* Botón de eliminar marcador visible, porque estamos editando */
+		Button deleteMarker = (Button) fragmentView.findViewById(R.id.delete_marker);
+		deleteMarker.setVisibility(View.VISIBLE);
+		/* Y el listener */
+		deleteMarker.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				createDialog(getString(R.string.confirm_delete_marker));
+				showDialog();
+			}
+		});
 
 		/* Titulo de la AppBar */
 		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.edit_marker);
@@ -37,7 +51,7 @@ public class EditMarkerFragment extends BaseEditMarkerFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		if (super.onOptionsItemSelected(menuItem) == true) {
-			database.editMarker(point, markerId);
+			database.editMarker(point, markerId.toString());
 			interactionListener.onEditMarker();
 			return true;
 		}
@@ -45,11 +59,26 @@ public class EditMarkerFragment extends BaseEditMarkerFragment {
 			return false;
 		}
 	}
+
+	@Override
+	public void createDialog(String message) {
+		super.createDialog(message);
+		alertDialog.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				database.deleteMarker(markerId.toString());
+				dialog.dismiss();
+				interactionListener.onDeleteMarker();
+			}
+		});
+
+	}
 	
-	public void setParams(LatLng location, String title, String description, String id) {
+	public void setParams(LatLng location, String title, String description, Long id) {
 		position = location;
 		this.title = title;
 		this.description = description;
 		markerId = id;
 	}
+
 }

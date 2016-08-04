@@ -18,14 +18,14 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class BaseEditMarkerFragment extends Fragment {
+public class BaseEditMarkerFragment extends BaseFragment {
 	/* Data */
 	protected View fragmentView;
 	protected LatLng position;
 	protected String title;
 	protected String description;
 	protected Point point;
-	protected String markerId;
+	protected Long markerId;
 	protected Database database;
 	
 	/* UI */
@@ -82,8 +82,8 @@ public class BaseEditMarkerFragment extends Fragment {
 			String owner = user.getEmail();
 			Geometry geometry = new Geometry();
 			geometry.setCoordinatesFromLatLng(position);
-			Properties properties = new Properties(markerId, title, description, owner);
-			point = new Point(geometry, properties);
+			Properties properties = new Properties(title, description, owner);
+			point = new Point(geometry, properties, markerId);
 			return true;
 		}
 		return false;
