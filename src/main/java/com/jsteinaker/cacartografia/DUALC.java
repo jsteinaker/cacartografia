@@ -92,14 +92,12 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 	}
 
 	@Override
-	public void onAddMarker(Point marker, String id) {
-		fragmentMap.addMarker(marker, id);
+	public void onAddMarker() {
 		fragmentManager.popBackStack();
 	}
 
 	@Override
-	public void onEditMarker(Point marker, String id) {
-		fragmentMap.editMarker(marker, id);
+	public void onEditMarker() {
 		fragmentManager.popBackStack();
 	}
 

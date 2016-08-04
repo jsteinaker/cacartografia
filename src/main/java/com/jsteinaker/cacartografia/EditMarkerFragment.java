@@ -37,7 +37,8 @@ public class EditMarkerFragment extends BaseEditMarkerFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		if (super.onOptionsItemSelected(menuItem) == true) {
-			interactionListener.onEditMarker(point, markerId);
+			database.editMarker(point, markerId);
+			interactionListener.onEditMarker();
 			return true;
 		}
 		else {

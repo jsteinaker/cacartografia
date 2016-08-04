@@ -16,6 +16,16 @@
 		/>
 	
 	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/directions_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end|top"
+		android:layout_margin="16dp"
+		android:src="@drawable/ic_directions"
+		android:visibility="gone"
+		/>
+
+	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/locationButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

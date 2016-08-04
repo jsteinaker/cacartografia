@@ -20,23 +20,25 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class BaseEditMarkerFragment extends Fragment {
 	/* Data */
-	View fragmentView;
-	LatLng position;
-	String title;
-	String description;
-	Point point;
-	String markerId;
+	protected View fragmentView;
+	protected LatLng position;
+	protected String title;
+	protected String description;
+	protected Point point;
+	protected String markerId;
+	protected Database database;
 	
 	/* UI */
-	OnFragmentInteractionListener interactionListener;
-	TextView mTitleField;
-	TextView mDescriptionField;
-	TextView mLocationField;
+	protected OnFragmentInteractionListener interactionListener;
+	protected TextView mTitleField;
+	protected TextView mDescriptionField;
+	protected TextView mLocationField;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
 		interactionListener = (OnFragmentInteractionListener) getActivity();
+		database = new Database();
 		fragmentView = inflater.inflate(R.layout.edit_marker, container, false);
 
 		// Referencias a los campos de texto
