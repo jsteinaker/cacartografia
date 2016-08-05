@@ -320,6 +320,8 @@ public class FragmentMap extends Fragment {
 	}
 
 	public void drawRoute(LatLng[] waypoints) {
+		if (route != null)
+			map.removePolyline(route);
 		route = map.addPolyline(new PolylineOptions()
 				.add(waypoints)
 				.width(5));

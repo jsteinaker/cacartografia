@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.Exception;
@@ -32,12 +33,15 @@ public class LoginFragment extends BaseFragment {
 	private FirebaseAuth auth;
 	private FirebaseAuth.AuthStateListener authListener;
 	private FirebaseUser user;
+	private Database database;
 
 	/* UI */
 	private View fragmentView;
 	private EditText mEmailField;
 	private EditText mPasswordField;
 	private ImageView avatar;
+	private Button btn;
+	private TextView userName;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class LoginFragment extends BaseFragment {
 				updateUI(user);
 			}
 		};
+
 	}
 
 	@Override
@@ -66,13 +71,19 @@ public class LoginFragment extends BaseFragment {
 		mEmailField = (EditText) fragmentView.findViewById(R.id.input_email);
 		mPasswordField = (EditText) fragmentView.findViewById(R.id.input_password);
 		avatar = (ImageView) fragmentView.findViewById(R.id.avatar);
+		userName = (TextView) fragmentView.findViewById(R.id.user_name);
 
 		// Modificaciones en la AppBar
-		((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.login);
 		((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		if (user != null) {
+			((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.user_account);
+		}
+		else {
+			((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.login);
+		}
 
 		/* Listener para el botón de logueo/deslogueo */
-		Button btn = (Button) fragmentView.findViewById(R.id.login_logout);
+		btn = (Button) fragmentView.findViewById(R.id.login_logout);
 		btn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v)
@@ -86,6 +97,16 @@ public class LoginFragment extends BaseFragment {
 				}
 			}
 		});
+		
+		/* Creamos un objeto database para las consultas */
+		database = new Database() {
+			/* Callback para actualizar el TextView cuando está lista la
+			 * información desde la base de datos */
+			@Override
+			public void onUserFullNameReady() {
+				userName.setText(fullName);
+			}
+		};
 		
 		return fragmentView;
 	}
@@ -139,24 +160,30 @@ public class LoginFragment extends BaseFragment {
 		/* No se usa diálogo de progreso porque debería ser instantáneo */
 		auth.signOut();
 		updateUI(null);
-		Log.w("DUALC", "Deslogueado");
 	}
 
 	private void updateUI(FirebaseUser user) {
 		hideProgressDialog();
 		if (user != null) {
+			/* Fuera campos de texto, cambia el texto del botón */
 			fragmentView.findViewById(R.id.input_email_layout).setVisibility(View.GONE);
 			fragmentView.findViewById(R.id.input_password_layout).setVisibility(View.GONE);
 			((Button)fragmentView.findViewById(R.id.login_logout)).setText(R.string.logout);
+			/* Pide a la base de datos el nombre de usuario, cuando está listo,
+			 * un callback actualiza el TextView */
+			userName.setVisibility(View.VISIBLE);
+			database.getUserFullName(user.getUid());
+			/* Carga la imagen de Gravatar */
 			avatar.setVisibility(View.VISIBLE);
 			String hash = Utils.md5hash(user.getEmail());
-			String gravatarURL = "http://www.gravatar.com/avatar/" + hash;
+			String gravatarURL = "http://www.gravatar.com/avatar/" + hash + "?s=256";
 			Picasso.with(getActivity()).load(gravatarURL).into(avatar);
 		}
 		else {
 			fragmentView.findViewById(R.id.input_email_layout).setVisibility(View.VISIBLE);
 			fragmentView.findViewById(R.id.input_password_layout).setVisibility(View.VISIBLE);
 			((Button)fragmentView.findViewById(R.id.login_logout)).setText(R.string.login);
+			userName.setVisibility(View.VISIBLE);
 			avatar.setVisibility(View.GONE);
 		}
 	}

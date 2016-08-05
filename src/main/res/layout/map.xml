@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout 
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:mapbox="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical"
   	android:layout_width="fill_parent"
@@ -19,8 +20,9 @@
 		android:id="@+id/directions_button"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="end|top"
-		android:layout_margin="16dp"
+		android:layout_gravity="bottom|right"
+		android:layout_marginBottom="80dp"
+		android:layout_marginRight="15dp"
 		android:src="@drawable/ic_directions"
 		android:visibility="gone"
 		/>
@@ -29,8 +31,8 @@
 		android:id="@+id/locationButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="end|bottom"
-		android:layout_margin="16dp"
+		android:layout_gravity="bottom|right"
+		android:layout_margin="15dp"
 		android:src="@drawable/ic_gps"
 		/>
 </android.support.design.widget.CoordinatorLayout>

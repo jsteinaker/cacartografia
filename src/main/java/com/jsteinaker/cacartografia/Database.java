@@ -7,10 +7,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Database {
 	
 	private DatabaseReference database;
+	protected String fullName;
 
 	public Database() {
 		database = FirebaseDatabase.getInstance().getReference();
@@ -27,7 +29,6 @@ public class Database {
 	public void deleteMarker(String id) {
 		database.child("features").child(id).removeValue();
 	}
-		
 
 	public void setUpListeners() {
 		/* Ponemos listeners para responder a los cambios que puedan ocurrir en
@@ -66,5 +67,25 @@ public class Database {
 	}
 
 	public void onMarkerDeleted(DataSnapshot dataSnapshot) {
+	}
+
+	public void getUserFullName(String uid) {
+		database.child("user_data").child(uid).child("full_name").addListenerForSingleValueEvent(
+				new ValueEventListener() {
+					@Override
+					public void onDataChange(DataSnapshot dataSnapshot) {
+						fullName = dataSnapshot.getValue(String.class);
+						onUserFullNameReady();
+					}
+
+					@Override
+					public void onCancelled(DatabaseError databaseError) {
+						Log.w("DUALC", databaseError.toException());
+					}
+				});
+	
+	}
+
+	public void onUserFullNameReady() {
 	}
 }

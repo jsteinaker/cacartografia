@@ -25,4 +25,5 @@
 	<string name="cancel">Cancel</string>
 	<string name="login_needed">Login needed</string>
 	<string name="login_needed_message">Login is required to be able to add new markers or edit existent ones.</string>
+	<string name="user_account">User account</string>
 </resources>
