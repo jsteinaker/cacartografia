@@ -10,8 +10,10 @@
 	<string name="input_title">Nombre</string>
 	<string name="input_description">Descripción</string>
 	<string name="input_location">Ubicación</string>
+	<string name="input_name">Nombre completo</string>
 	<string name="input_email">E-mail</string>
 	<string name="input_password">Contraseña</string>
+	<string name="repeat_password">Repita contraseña</string>
 	<string name="auth_failed">Falló inicio de sesión</string>
 	<string name="logging">Iniciando sesión...</string>
 	<string name="required">Requerido</string>
@@ -26,4 +28,7 @@
 	<string name="login_needed">Inicio de sesión requerido</string>
 	<string name="login_needed_message">Es necesario iniciar sesión en su cuenta para poder crear nuevos marcadores o editar los existentes.</string>
 	<string name="user_account">Cuenta de usuario</string>
+	<string name="dont_have_account">¿No tienes cuenta?</string>
+	<string name="register">Registro</string>
+	<string name="passwords_dont_match">Las contraseñas no coinciden</string>
 </resources>

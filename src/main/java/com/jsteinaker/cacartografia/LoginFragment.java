@@ -29,7 +29,7 @@ import com.squareup.picasso.Picasso;
 public class LoginFragment extends BaseFragment {
 	
 	/* Data*/
-	OnFragmentInteractionListener interactionListener;
+	private OnFragmentInteractionListener interactionListener;
 	private FirebaseAuth auth;
 	private FirebaseAuth.AuthStateListener authListener;
 	private FirebaseUser user;
@@ -97,6 +97,15 @@ public class LoginFragment extends BaseFragment {
 				}
 			}
 		});
+
+		/* Listener para el botón de registro */
+		btn = (Button) fragmentView.findViewById(R.id.register);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				((DUALC)getActivity()).loadRegisterFragment();
+			}
+		});
 		
 		/* Creamos un objeto database para las consultas */
 		database = new Database() {
@@ -127,8 +136,7 @@ public class LoginFragment extends BaseFragment {
 
 	private void logIn(String email, String password) {
 		/* Terminar inmediatamente si alguno de los campos está vacío */
-		if (!validateForm())
-		{
+		if (!validateForm()) {
 			return;
 		}
 		
@@ -169,6 +177,8 @@ public class LoginFragment extends BaseFragment {
 			fragmentView.findViewById(R.id.input_email_layout).setVisibility(View.GONE);
 			fragmentView.findViewById(R.id.input_password_layout).setVisibility(View.GONE);
 			((Button)fragmentView.findViewById(R.id.login_logout)).setText(R.string.logout);
+			fragmentView.findViewById(R.id.dont_have_account).setVisibility(View.GONE);
+			fragmentView.findViewById(R.id.register).setVisibility(View.GONE);
 			/* Pide a la base de datos el nombre de usuario, cuando está listo,
 			 * un callback actualiza el TextView */
 			userName.setVisibility(View.VISIBLE);
@@ -182,6 +192,8 @@ public class LoginFragment extends BaseFragment {
 		else {
 			fragmentView.findViewById(R.id.input_email_layout).setVisibility(View.VISIBLE);
 			fragmentView.findViewById(R.id.input_password_layout).setVisibility(View.VISIBLE);
+			fragmentView.findViewById(R.id.dont_have_account).setVisibility(View.VISIBLE);
+			fragmentView.findViewById(R.id.register).setVisibility(View.VISIBLE);
 			((Button)fragmentView.findViewById(R.id.login_logout)).setText(R.string.login);
 			userName.setVisibility(View.VISIBLE);
 			avatar.setVisibility(View.GONE);

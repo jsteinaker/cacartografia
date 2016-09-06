@@ -2,6 +2,8 @@ package com.jsteinaker.cacartografia;
 
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +71,11 @@ public class Database {
 	public void onMarkerDeleted(DataSnapshot dataSnapshot) {
 	}
 
+	public FirebaseUser getUser() {
+		FirebaseAuth auth = FirebaseAuth.getInstance();
+		return auth.getCurrentUser();
+	}
+	
 	public void getUserFullName(String uid) {
 		database.child("user_data").child(uid).child("full_name").addListenerForSingleValueEvent(
 				new ValueEventListener() {
@@ -87,5 +94,9 @@ public class Database {
 	}
 
 	public void onUserFullNameReady() {
+	}
+
+	public void setUserFullName(String uid, String fullName) {
+		database.child("user_data").child(uid).child("full_name").setValue(fullName);
 	}
 }

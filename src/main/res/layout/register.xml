@@ -2,7 +2,7 @@
 
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/login_layout"
+	android:id="@+id/register_layout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:layout_marginTop="?attr/actionBarSize"
@@ -10,6 +10,19 @@
 	android:paddingLeft="20dp"
 	android:paddingRight="20dp">
 
+	<android.support.design.widget.TextInputLayout
+		android:id="@+id/input_name_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<EditText
+			android:id="@+id/input_name"
+			android:hint="@string/input_name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			/>
+	</android.support.design.widget.TextInputLayout>
+	
 	<android.support.design.widget.TextInputLayout
 		android:id="@+id/input_email_layout"
 		android:layout_width="match_parent"
@@ -37,37 +50,19 @@
 			/>
 	</android.support.design.widget.TextInputLayout>
 	
-	<TextView
-		android:id="@+id/user_name"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:visibility="gone"
-		/>
+	<android.support.design.widget.TextInputLayout
+		android:id="@+id/repeat_password_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
 
-	<ImageView
-		android:id="@+id/avatar"
-		android:layout_width="100dp"
-		android:layout_height="100dp"
-		android:layout_gravity="center_horizontal"
-		android:visibility="gone"
-		/>
-
-	<Button
-		android:id="@+id/login_logout"
-		android:text="@string/login"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		/>
-
-	<TextView
-		android:id="@+id/dont_have_account"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:text="@string/dont_have_account"
-		/>
+		<EditText
+			android:id="@+id/repeat_password"
+			android:hint="@string/repeat_password"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:inputType="textPassword"
+			/>
+	</android.support.design.widget.TextInputLayout>
 	
 	<Button
 		android:id="@+id/register"
@@ -76,5 +71,5 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal"
 		/>
-
+	
 </LinearLayout>

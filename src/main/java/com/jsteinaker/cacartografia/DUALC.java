@@ -88,7 +88,17 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 		editMarkerFragment.setParams(marker.getPosition(),
 				marker.getTitle(), marker.getSnippet(), markerId);
 		getSupportFragmentManager().beginTransaction()
-			.replace(R.id.fragment_frame, editMarkerFragment).addToBackStack(null).commit(); 
+			.replace(R.id.fragment_frame, editMarkerFragment)
+			.addToBackStack(null)
+			.commit(); 
+	}
+
+	public void loadRegisterFragment() {
+		RegisterFragment registerFragment = new RegisterFragment();
+		getSupportFragmentManager().beginTransaction()
+			.replace(R.id.fragment_frame, registerFragment)
+			.addToBackStack(null)
+			.commit();
 	}
 
 	@Override
@@ -109,6 +119,11 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 
 	@Override
 	public void onLoginCorrect() {
+		fragmentManager.popBackStack();
+	}
+
+	@Override
+	public void onRegister() {
 		fragmentManager.popBackStack();
 	}
 }

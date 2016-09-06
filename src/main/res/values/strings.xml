@@ -10,8 +10,10 @@
 	<string name="input_title">Title</string>
 	<string name="input_description">Description</string>
 	<string name="input_location">Location</string>
+	<string name="input_name">Full name</string>
 	<string name="input_email">E-mail</string>
 	<string name="input_password">Password</string>
+	<string name="repeat_password">Repeat password</string>
 	<string name="auth_failed">Authentication failed</string>
 	<string name="logging">Logging in...</string>
 	<string name="required">Required</string>
@@ -26,4 +28,7 @@
 	<string name="login_needed">Login needed</string>
 	<string name="login_needed_message">Login is required to be able to add new markers or edit existent ones.</string>
 	<string name="user_account">User account</string>
+	<string name="dont_have_account">Don\'t have an account?</string>
+	<string name="register">Register</string>
+	<string name="passwords_dont_match">Passwords don\'t match</string>
 </resources>
