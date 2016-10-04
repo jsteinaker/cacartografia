@@ -54,4 +54,14 @@ public class Point {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	/* Sobrecarga de toString()
+	 * Tiene como objetivo poder usar este objeto en un ArrayAdapter convencional,
+	 * sin necesidad de definir uno propio.
+	 * El valor de retorno de esta función definirá el campo usado para buscar.
+	 * Así, si retornamos el título, este será usado para la búsqueda */
+	@Override
+	public String toString() {
+		return getProperties().getTitle();
+	}
 }

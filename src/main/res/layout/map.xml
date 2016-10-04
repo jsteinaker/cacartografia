@@ -35,4 +35,13 @@
 		android:layout_margin="15dp"
 		android:src="@drawable/ic_gps"
 		/>
+	
+	<AutoCompleteTextView
+		android:id="@+id/search_widget"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/search_location"
+
+		/>
+
 </android.support.design.widget.CoordinatorLayout>

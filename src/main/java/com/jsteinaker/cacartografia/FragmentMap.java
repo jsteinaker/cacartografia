@@ -15,6 +15,9 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -55,6 +58,7 @@ public class FragmentMap extends Fragment {
 	private FloatingActionButton directionsButton;
 
 	/* Data */
+	private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoianN0ZWluYWtlciIsImEiOiI4Zjc4YTFiNzkwMWFiYmFhZTVhNjJjODdkZGM5YzM1NiJ9.opMzYPAFV5uhK3f_UIqKcQ";
 	private MapboxMap map;
 	private LocationServices locationServices;
 	private DatabaseReference database;
@@ -65,6 +69,7 @@ public class FragmentMap extends Fragment {
 	private Hashtable<String, Long> idTable;
 	private Polyline route;
 	private Database databaseRef;
+	private ArrayAdapter<Point> autocompleteMarkerList;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class FragmentMap extends Fragment {
 		instanceStateCopy = savedInstanceState;
 		nextMarkerId = 0;
 		idTable = new Hashtable<String, Long>();
+ 		autocompleteMarkerList = new ArrayAdapter<Point>(getActivity(), android.R.layout.simple_list_item_1);
 		databaseRef = new Database() {
 			@Override
 			public void onMarkerAdded(DataSnapshot dataSnapshot) {
@@ -82,6 +88,11 @@ public class FragmentMap extends Fragment {
 			@Override
 			public void onMarkerDeleted(DataSnapshot dataSnapshot) {
 				removeDeletedMarker(dataSnapshot.getKey());
+			}
+
+			@Override
+			public void onMarkerDataChanged(DataSnapshot dataSnapshot) {
+				reloadSearchData(dataSnapshot);
 			}
 		};
 				
@@ -99,6 +110,7 @@ public class FragmentMap extends Fragment {
 			locationButton = (FloatingActionButton) fragmentView.findViewById(R.id.locationButton);
 			directionsButton = (FloatingActionButton) fragmentView.findViewById(R.id.directions_button);
 			setupButtons();
+			setupSearchWidget();
 		}
 
 		// Modificaciones en la AppBar
@@ -286,20 +298,46 @@ public class FragmentMap extends Fragment {
 			}
 		});
 	}
-	
+
+	/* Mueve la cámara a la ubicación elegida */
+	public void updateCamera(LatLng location) {
+		map.setCameraPosition(new CameraPosition.Builder()
+			.target(location)
+			.zoom(14)
+			.build()); 
+	}
+
 	/* Obtiene ubicación por GPS y mueve la cámara */
 	public void locateUser() {
 		Location location = locationServices.getLastLocation();
-			if (location != null) {
 			// Mover mapa
-			map.setCameraPosition(new CameraPosition.Builder()
-				.target(new LatLng(location))
-				.zoom(14)
-				.build()); 
+			if (location != null) {
+				updateCamera(new LatLng(location));
 			}
 			
 		map.setMyLocationEnabled(true);
 	}
+
+	/* Cuadro de búsqueda */
+	public void setupSearchWidget() {
+		AutoCompleteTextView searchWidget = (AutoCompleteTextView) fragmentView.findViewById(R.id.search_widget);
+		searchWidget.setAdapter(autocompleteMarkerList);
+		searchWidget.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+				Point result = (Point) adapterView.getItemAtPosition(position);
+			}
+		});
+	}
+
+	/* Refresca los datos de búsqueda en caso de cambios */
+	public void reloadSearchData(DataSnapshot dataSnapshot) {
+		for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()) {
+			Point suggestion = suggestionSnapshot.getValue(Point.class);
+			autocompleteMarkerList.add(suggestion);
+		}
+	}
+
 
 	public void drawNewMarker(Point point, String userId) {
 		Properties properties = point.getProperties();

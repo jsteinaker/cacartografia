@@ -31,4 +31,5 @@
 	<string name="dont_have_account">¿No tienes cuenta?</string>
 	<string name="register">Registro</string>
 	<string name="passwords_dont_match">Las contraseñas no coinciden</string>
+	<string name="search_location">Buscar lugar</string>
 </resources>

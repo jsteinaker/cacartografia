@@ -63,12 +63,28 @@ public class Database {
 				Log.w("DUALC", "ChildEventListener:onCancelled", databaseError.toException());
 			}
 		});
+
+		database.child("features").addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				onMarkerDataChanged(dataSnapshot);
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+				Log.w("DUALC", "ValueEventListener:onCancelled", databaseError.toException());
+			}
+		});
+
 	}
 
 	public void onMarkerAdded(DataSnapshot dataSnapshot) {
 	}
 
 	public void onMarkerDeleted(DataSnapshot dataSnapshot) {
+	}
+
+	public void onMarkerDataChanged(DataSnapshot dataSnapshot) {
 	}
 
 	public FirebaseUser getUser() {
