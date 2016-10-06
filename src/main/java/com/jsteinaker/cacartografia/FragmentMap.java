@@ -49,6 +49,8 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 public class FragmentMap extends Fragment {
 	
 	/* UI */
@@ -56,6 +58,8 @@ public class FragmentMap extends Fragment {
 	private MapView mapView;
 	private FloatingActionButton locationButton;
 	private FloatingActionButton directionsButton;
+	private FloatingActionButton editMarkerButton;
+	private SlidingUpPanelLayout slidingPanel;
 
 	/* Data */
 	private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoianN0ZWluYWtlciIsImEiOiI4Zjc4YTFiNzkwMWFiYmFhZTVhNjJjODdkZGM5YzM1NiJ9.opMzYPAFV5uhK3f_UIqKcQ";
@@ -109,7 +113,9 @@ public class FragmentMap extends Fragment {
 			setupMapView();
 			locationButton = (FloatingActionButton) fragmentView.findViewById(R.id.locationButton);
 			directionsButton = (FloatingActionButton) fragmentView.findViewById(R.id.directions_button);
+			editMarkerButton = (FloatingActionButton) fragmentView.findViewById(R.id.edit_marker_button);
 			setupButtons();
+			slidingPanel = (SlidingUpPanelLayout) fragmentView.findViewById(R.id.sliding_layout);
 			setupSearchWidget();
 		}
 
@@ -185,90 +191,97 @@ public class FragmentMap extends Fragment {
 								.icon(newMarkerIcon));
 					}
 				});
-				/* También un listener para que los clicks comunes "limpien" el nuevo marcador */
+				/* Click en una parte vacía del mapa */
 				map.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
 					@Override
 					public void onMapClick(LatLng point) {
+						// Elimina el ícono de crear nuevo marcador, si estuviera
 						if (newMarker != null)
 						{
 							map.removeMarker(newMarker);
 						}
 						newMarker = null;
-						/* Y de paso, ocultamos el botón de direcciones si no
-						 * hay marcador seleccionado. */
+				 		// Oculta el botón de direcciones
 						directionsButton.setVisibility(View.GONE);
+				 		// Oculta el panel de información
+						infoPanelDown();
 					}
 				});
 				/* Y un listener para verificar cuando el usuario clickea sobre el nuevo marcador */
 				map.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
 					@Override
 					public boolean onMarkerClick(Marker marker) {
-						if (marker == newMarker)
-						{
+						if (marker == newMarker) {
 							user = FirebaseAuth.getInstance().getCurrentUser();
 							if (user != null) {
 								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition(), nextMarkerId);
 								/* Quitamos del mapa el marcador provisional luego de lanzar el otro fragmento */
 								map.removeMarker(newMarker);
 								newMarker = null;
-								return true;
 							}
 							else {
 								newMarker.setTitle(getString(R.string.login_needed));
 								newMarker.setSnippet(getString(R.string.login_needed_message));
 							}
 						}
-						return false;
+						else {
+							TextView textView = (TextView) fragmentView.findViewById(R.id.marker_title);
+							textView.setText(marker.getTitle());
+							textView = (TextView) fragmentView.findViewById(R.id.marker_description);
+							textView.setText(marker.getSnippet());
+							infoPanelUp();
+							// Hacemos visible al botón de direcciones
+							directionsButton.setVisibility(View.VISIBLE);
+							// Cast explícito necesario para poder usar getOwner
+							DUALCMarker dualcMarker = (DUALCMarker) marker;
+							user = FirebaseAuth.getInstance().getCurrentUser();
+							// Chequeo del usuario actual y el dueño del marcador,
+							// si es el mismo puede editarlo
+							if (user != null) {
+								String owner = user.getEmail();
+								if (dualcMarker.getOwner().equals(owner)) {
+									editMarkerButton.setVisibility(View.VISIBLE);
+								}
+							}
+						}
+						return true;
 					}
 				});
+				
 
-				/* Un adaptador para modificar las InfoWindow mostradas*/
+				/* CODIGO VIEJO, PRESENTE PARA REUTILIZAR LOGICA
+
+				// Un adaptador para modificar las InfoWindow mostradas
 				map.setInfoWindowAdapter(new MapboxMap.InfoWindowAdapter() {
 					@Override
 					public View getInfoWindow(Marker marker) {
 						DUALCInfoWindow infoWindow = (DUALCInfoWindow) LayoutInflater
 							.from(getActivity())
 							.inflate(R.layout.info_window, null);
-						/* Altura máxima de InfoWindow relativa a la altura del
-						 * mapa en pantalla */
+						// Altura máxima de InfoWindow relativa a la altura del
+						// mapa en pantalla
 						infoWindow.setMaxHeight(mapView.getHeight());
 						TextView tv = (TextView) infoWindow.findViewById(R.id.infowindow_title);
 						tv.setText(marker.getTitle());
 						tv = (TextView) infoWindow.findViewById(R.id.infowindow_description);
 						tv.setText(marker.getSnippet());
-						/* Se puede hacer scroll en la descripción */
+						// Se puede hacer scroll en la descripción
 						tv.setMovementMethod(new ScrollingMovementMethod());
 						ImageButton btn = (ImageButton) infoWindow.findViewById(R.id.infowindow_editmarker);
-						/* Cast explícito necesario para poder usar getOwner */
-						DUALCMarker dualcMarker = (DUALCMarker) marker;
-						user = FirebaseAuth.getInstance().getCurrentUser();
-						/* Chequeo del usuario actual y el dueño del marcador,
-						 * si es el mismo puede editarlo */
-						if (user != null) {
-							String owner = user.getEmail();
-							if (dualcMarker.getOwner().equals(owner)) {
-								btn.setVisibility(View.VISIBLE);
-								final DUALCMarker markerCopy = dualcMarker;
-								btn.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View view) {
-										Long dualcId = markerCopy.getDualcId();
-										((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, dualcId);
-									}
-								});
-							}
-						}
-						/* Hacemos visible al botón de direcciones */
-						directionsButton.setVisibility(View.VISIBLE);
 						return infoWindow;
 					}
 				});
+				*/
 
 				/* Inicializamos los Location Services */
 				locationServices = LocationServices.getLocationServices(getActivity());
 
 				/* Cargamos marcadores */
 				databaseRef.setUpListeners();
+
+				/* FIXME: el panel debería iniciar oculto, y no bajar luego
+				 * de cargado el mapa */
+				infoPanelDown();
 
 			}
 		});
@@ -295,6 +308,15 @@ public class FragmentMap extends Fragment {
 					}
 				};
 				route.calculate(Route.WALKING);
+			}
+		});
+
+		editMarkerButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				final DUALCMarker markerCopy = ((DUALCMarker) map.getSelectedMarkers().get(0));
+				Long dualcId = markerCopy.getDualcId();
+				((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, dualcId);
 			}
 		});
 	}
@@ -382,5 +404,17 @@ public class FragmentMap extends Fragment {
 	public void deselectMarkers() {
 		map.deselectMarkers();
 	}
+
+	/* Sube el panel de información */
+	public void infoPanelUp() {
+		slidingPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+	}
+
+	/* Baja el panel de información */
+	public void infoPanelDown() {
+		slidingPanel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+		editMarkerButton.setVisibility(View.GONE);
+	}
+
 
 }

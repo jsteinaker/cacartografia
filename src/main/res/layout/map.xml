@@ -1,47 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout 
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:mapbox="http://schemas.android.com/apk/res-auto"
-	android:orientation="vertical"
-  	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 
-	<com.mapbox.mapboxsdk.maps.MapView
-		android:id="@+id/mapView"
+	<com.sothree.slidinguppanel.SlidingUpPanelLayout
+		xmlns:sothree="http://schemas.android.com/apk/res-auto"
+		android:id="@+id/sliding_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		mapbox:style_url="@string/mapboxStyleUrl"
-		mapbox:access_token="@string/mapboxAccessToken"
-		mapbox:attribution_enabled="false"
-		/>
-	
+		android:gravity="bottom"
+		sothree:umanoPanelHeight="68dp"
+		sothree:umanoShadowHeight="4dp">
+
+		<android.support.design.widget.CoordinatorLayout 
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<com.mapbox.mapboxsdk.maps.MapView
+				android:id="@+id/mapView"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				mapbox:style_url="@string/mapboxStyleUrl"
+				mapbox:access_token="@string/mapboxAccessToken"
+				mapbox:attribution_enabled="false"
+				/>
+			
+			<android.support.design.widget.FloatingActionButton
+				android:id="@+id/directions_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="bottom|right"
+				android:layout_marginBottom="120dp"
+				android:layout_marginRight="15dp"
+				android:src="@drawable/ic_directions"
+				android:visibility="gone"
+				/>
+
+			<android.support.design.widget.FloatingActionButton
+				android:id="@+id/locationButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="bottom|right"
+				android:layout_marginRight="15dp"
+				android:layout_marginBottom="55dp"
+				android:src="@drawable/ic_gps"
+				/>
+			
+			<AutoCompleteTextView
+				android:id="@+id/search_widget"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/search_location"
+
+				/>
+
+		</android.support.design.widget.CoordinatorLayout>
+
+		<LinearLayout
+			android:id="@+id/sliding_panel"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			>
+
+			<TextView
+				android:id="@+id/marker_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="@color/black"
+				android:textSize="18sp"
+				android:textStyle="bold"
+				/>
+			<TextView
+				android:id="@+id/marker_description"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="14sp"
+				android:layout_marginTop="2dp"
+				android:lineSpacingExtra="1dp"
+				/>
+
+		</LinearLayout>
+
+	</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
 	<android.support.design.widget.FloatingActionButton
-		android:id="@+id/directions_button"
+		android:id="@+id/edit_marker_button"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|right"
-		android:layout_marginBottom="80dp"
-		android:layout_marginRight="15dp"
-		android:src="@drawable/ic_directions"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true"
+		android:layout_marginBottom="20dp"
+		android:layout_marginRight="4dp"
+		android:src="@drawable/ic_edit"
 		android:visibility="gone"
 		/>
 
-	<android.support.design.widget.FloatingActionButton
-		android:id="@+id/locationButton"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|right"
-		android:layout_margin="15dp"
-		android:src="@drawable/ic_gps"
-		/>
-	
-	<AutoCompleteTextView
-		android:id="@+id/search_widget"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:hint="@string/search_location"
-
-		/>
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
