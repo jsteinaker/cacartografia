@@ -326,6 +326,20 @@ public class FragmentMap extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 				Point result = (Point) adapterView.getItemAtPosition(position);
+				updateCamera(result.getGeometry().getCoordinatesInLatLng());
+				/* FIXME
+				 * Selecciona el marcador (consigue el ID mediante hashtable)
+				 * Para seleccionar el marcador, hay que:
+				 * Conseguir el ID del objeto Point
+				 * Transformarlo a String (es Long)
+				 * Conseguir el ID interno de Mapbox mediante el hashtable
+				 * Conseguir referencia al marcador mediante getAnnotation()
+				 * Castear esa referencia al tipo Marker
+				 * Finalmente, llamar a la función de selección
+				 * Evidentemente, hay que repensar el sistema de referencias
+				 * y IDs, o, mejor dicho, las estructuras de datos por
+				 * completo. */
+				map.selectMarker((Marker)map.getAnnotation(idTable.get(result.getId().toString())));
 			}
 		});
 	}
