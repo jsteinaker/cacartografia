@@ -24,7 +24,5 @@
     <color name="mapboxNavy">#28353D</color>
 	<color name="mapboxNavyDark">#222B30</color>
 
-	<color name="infoWindowBorderGrey">#C2C2C2</color>
-
 	<color name="red500">#F44336</color>
 </resources>

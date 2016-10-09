@@ -55,7 +55,10 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="@string/search_location"
-
+				android:background="@color/mapboxGreen"
+				android:textColor="@color/white"
+				android:textColorHint="@color/white"
+				android:visibility="gone"
 				/>
 
 		</android.support.design.widget.CoordinatorLayout>

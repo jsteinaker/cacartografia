@@ -2,13 +2,17 @@ package com.jsteinaker.cacartografia;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     private ProgressDialog mProgressDialog;
 	protected AlertDialog.Builder alertDialog;
+	protected BackHandlerInterface backHandlerInterface;
+	
+	public abstract boolean onBackPressed();
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
@@ -45,6 +49,18 @@ public class BaseFragment extends Fragment {
 
 	public void showDialog() {
 		alertDialog.show();
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		backHandlerInterface = (BackHandlerInterface) getActivity();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		backHandlerInterface.setSelectedFragment(this);
 	}
 
     @Override

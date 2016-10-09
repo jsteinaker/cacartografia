@@ -12,6 +12,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
@@ -51,7 +52,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-public class FragmentMap extends Fragment {
+public class FragmentMap extends BaseFragment {
 	
 	/* UI */
 	private View fragmentView;
@@ -60,6 +61,7 @@ public class FragmentMap extends Fragment {
 	private FloatingActionButton directionsButton;
 	private FloatingActionButton editMarkerButton;
 	private SlidingUpPanelLayout slidingPanel;
+	private AutoCompleteTextView searchWidget;
 
 	/* Data */
 	private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoianN0ZWluYWtlciIsImEiOiI4Zjc4YTFiNzkwMWFiYmFhZTVhNjJjODdkZGM5YzM1NiJ9.opMzYPAFV5uhK3f_UIqKcQ";
@@ -116,6 +118,7 @@ public class FragmentMap extends Fragment {
 			editMarkerButton = (FloatingActionButton) fragmentView.findViewById(R.id.edit_marker_button);
 			setupButtons();
 			slidingPanel = (SlidingUpPanelLayout) fragmentView.findViewById(R.id.sliding_layout);
+			searchWidget = (AutoCompleteTextView) fragmentView.findViewById(R.id.search_widget);
 			setupSearchWidget();
 		}
 
@@ -130,6 +133,15 @@ public class FragmentMap extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.map_menu, menu);
 		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		if (menuItem.getItemId() == R.id.search) {
+			searchWidget.setVisibility(View.VISIBLE);
+			return true;
+		}
+		return super.onOptionsItemSelected(menuItem);
 	}
 	
 	@Override
@@ -342,7 +354,6 @@ public class FragmentMap extends Fragment {
 
 	/* Cuadro de búsqueda */
 	public void setupSearchWidget() {
-		AutoCompleteTextView searchWidget = (AutoCompleteTextView) fragmentView.findViewById(R.id.search_widget);
 		searchWidget.setAdapter(autocompleteMarkerList);
 		searchWidget.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -362,6 +373,9 @@ public class FragmentMap extends Fragment {
 				 * y IDs, o, mejor dicho, las estructuras de datos por
 				 * completo. */
 				map.selectMarker((Marker)map.getAnnotation(idTable.get(result.getId().toString())));
+				Utils.hideKeyboard(getActivity());
+				searchWidget.setText(null);
+				searchWidget.setVisibility(View.GONE);
 			}
 		});
 	}
@@ -414,6 +428,16 @@ public class FragmentMap extends Fragment {
 	public void infoPanelDown() {
 		slidingPanel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 		editMarkerButton.setVisibility(View.GONE);
+	}
+
+	/* Control de la tecla "back" */
+	@Override
+	public boolean onBackPressed() {
+		if (slidingPanel != null && slidingPanel.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+			slidingPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+			return true;
+		}
+		return false;
 	}
 
 

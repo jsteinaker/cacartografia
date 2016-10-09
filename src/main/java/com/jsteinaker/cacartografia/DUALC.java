@@ -13,11 +13,12 @@ import android.util.Log;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-public class DUALC extends AppCompatActivity implements OnFragmentInteractionListener
+public class DUALC extends AppCompatActivity implements OnFragmentInteractionListener, BackHandlerInterface
 {
-	FragmentManager fragmentManager;
-	FragmentMap fragmentMap;
-	LoginFragment loginFragment;
+	private FragmentManager fragmentManager;
+	private FragmentMap fragmentMap;
+	private LoginFragment loginFragment;
+	private BaseFragment selectedFragment;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -125,5 +126,18 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 	@Override
 	public void onRegister() {
 		fragmentManager.popBackStack();
+	}
+
+	/* Control de la tecla back */
+	@Override
+	public void onBackPressed() {
+		if (selectedFragment == null || !selectedFragment.onBackPressed()) {
+			super.onBackPressed();
+		}
+	}
+
+	@Override
+	public void setSelectedFragment(BaseFragment fragment) {
+		selectedFragment = fragment;
 	}
 }

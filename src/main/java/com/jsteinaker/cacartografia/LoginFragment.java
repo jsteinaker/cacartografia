@@ -222,4 +222,10 @@ public class LoginFragment extends BaseFragment {
         return valid;
 	}
 
+	/* Control de la tecla back */
+	@Override
+	public boolean onBackPressed() {
+		return false;
+	}
+
 }
