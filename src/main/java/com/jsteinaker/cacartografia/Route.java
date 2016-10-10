@@ -46,10 +46,13 @@ public class Route {
 			client.enqueueCall(new Callback<DirectionsResponse>() {
 				@Override
 				public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-					if (response.body() == null) {
+					try {
+						route = response.body().getRoutes().get(0);
+					}
+					catch (Exception e) {
 						return;
 					}
-					route = response.body().getRoutes().get(0);
+
 					List<Position> positions = PolylineUtils.decode(route.getGeometry(), 5);
 					waypoints = new LatLng[positions.size()];
 					int i = 0;

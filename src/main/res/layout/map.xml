@@ -30,13 +30,13 @@
 				/>
 			
 			<android.support.design.widget.FloatingActionButton
-				android:id="@+id/directions_button"
+				android:id="@+id/edit_marker_button"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="bottom|right"
 				android:layout_marginBottom="120dp"
 				android:layout_marginRight="15dp"
-				android:src="@drawable/ic_directions"
+				android:src="@drawable/ic_edit"
 				android:visibility="gone"
 				/>
 
@@ -92,14 +92,14 @@
 	</com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 	<android.support.design.widget.FloatingActionButton
-		android:id="@+id/edit_marker_button"
+		android:id="@+id/directions_button"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
 		android:layout_marginBottom="20dp"
 		android:layout_marginRight="4dp"
-		android:src="@drawable/ic_edit"
+		android:src="@drawable/ic_directions"
 		android:visibility="gone"
 		/>
 
