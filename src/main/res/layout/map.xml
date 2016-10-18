@@ -50,16 +50,21 @@
 				android:src="@drawable/ic_gps"
 				/>
 			
-			<AutoCompleteTextView
-				android:id="@+id/search_widget"
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/search_box_layout"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:hint="@string/search_location"
-				android:background="@color/mapboxGreen"
-				android:textColor="@color/white"
-				android:textColorHint="@color/white"
-				android:visibility="gone"
-				/>
+				android:background="@color/mapboxGreenTransparent">
+
+				<AutoCompleteTextView
+					android:id="@+id/search_box"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/search_location"
+					android:visibility="gone"
+					android:paddingLeft="16dp"
+					/>
+			</android.support.design.widget.TextInputLayout>
 
 		</android.support.design.widget.CoordinatorLayout>
 

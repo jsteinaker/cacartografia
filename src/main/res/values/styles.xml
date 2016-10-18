@@ -17,8 +17,9 @@
 
 	<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-	<style name="AppThemeInverted" parent="Theme.AppCompat.Light.DarkActionBar">
-		<item name="android:background">@color/mapboxGreen</item>
+	<style name="DarkBackgroundZones">
+		<item name="android:background">@color/colorPrimary</item>
 		<item name="android:textColor">@color/white</item>
+		<item name="android:textColorHint">@color/colorAccent</item>
 	</style>
 </resources>

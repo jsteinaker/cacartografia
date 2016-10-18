@@ -9,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,7 +63,7 @@ public class FragmentMap extends BaseFragment {
 	private FloatingActionButton directionsButton;
 	private FloatingActionButton editMarkerButton;
 	private SlidingUpPanelLayout slidingPanel;
-	private AutoCompleteTextView searchWidget;
+	private AutoCompleteTextView searchBox;
 
 	/* Data */
 	private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoianN0ZWluYWtlciIsImEiOiI4Zjc4YTFiNzkwMWFiYmFhZTVhNjJjODdkZGM5YzM1NiJ9.opMzYPAFV5uhK3f_UIqKcQ";
@@ -118,8 +120,8 @@ public class FragmentMap extends BaseFragment {
 			editMarkerButton = (FloatingActionButton) fragmentView.findViewById(R.id.edit_marker_button);
 			setupButtons();
 			slidingPanel = (SlidingUpPanelLayout) fragmentView.findViewById(R.id.sliding_layout);
-			searchWidget = (AutoCompleteTextView) fragmentView.findViewById(R.id.search_widget);
-			setupSearchWidget();
+			searchBox = (AutoCompleteTextView) fragmentView.findViewById(R.id.search_box);
+			setupSearchBox();
 		}
 
 		// Modificaciones en la AppBar
@@ -138,7 +140,7 @@ public class FragmentMap extends BaseFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		if (menuItem.getItemId() == R.id.search) {
-			searchWidget.setVisibility(View.VISIBLE);
+			showSearchBox();
 			return true;
 		}
 		return super.onOptionsItemSelected(menuItem);
@@ -213,10 +215,10 @@ public class FragmentMap extends BaseFragment {
 							map.removeMarker(newMarker);
 						}
 						newMarker = null;
-				 		// Oculta el botón de direcciones
+				 		// Oculta los controles que no correspondan
 						directionsButton.setVisibility(View.GONE);
-				 		// Oculta el panel de información
 						infoPanelDown();
+						hideSearchBox();
 					}
 				});
 				/* Y un listener para verificar cuando el usuario clickea sobre el nuevo marcador */
@@ -353,9 +355,9 @@ public class FragmentMap extends BaseFragment {
 	}
 
 	/* Cuadro de búsqueda */
-	public void setupSearchWidget() {
-		searchWidget.setAdapter(autocompleteMarkerList);
-		searchWidget.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+	public void setupSearchBox() {
+		searchBox.setAdapter(autocompleteMarkerList);
+		searchBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 				Point result = (Point) adapterView.getItemAtPosition(position);
@@ -374,8 +376,8 @@ public class FragmentMap extends BaseFragment {
 				 * completo. */
 				map.selectMarker((Marker)map.getAnnotation(idTable.get(result.getId().toString())));
 				Utils.hideKeyboard(getActivity());
-				searchWidget.setText(null);
-				searchWidget.setVisibility(View.GONE);
+				searchBox.setText(null);
+				hideSearchBox();
 			}
 		});
 	}
@@ -428,6 +430,22 @@ public class FragmentMap extends BaseFragment {
 	public void infoPanelDown() {
 		slidingPanel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 		editMarkerButton.setVisibility(View.GONE);
+	}
+	
+	/* Baja la caja de búsqueda */
+	public void showSearchBox() {
+		Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
+		View searchBoxLayout = (View) fragmentView.findViewById(R.id.search_box_layout);
+		searchBoxLayout.startAnimation(anim);
+		searchBox.setVisibility(View.VISIBLE);
+	}
+
+	/* Sube la caja de búsqueda */
+	public void hideSearchBox() {
+		Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
+		View searchBoxLayout = (View) fragmentView.findViewById(R.id.search_box_layout);
+		searchBoxLayout.startAnimation(anim);
+		searchBox.setVisibility(View.GONE);
 	}
 
 	/* Control de la tecla "back" */

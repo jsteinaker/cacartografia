@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@color/mapboxGreen</color>
-    <color name="colorPrimaryDark">@color/mapboxGreen</color>
-    <color name="colorAccent">@color/mapboxGreen</color>
+    <color name="colorPrimaryDark">@color/green900</color>
+    <color name="colorAccent">@color/brown500</color>
     
     <color name="materialGrey">#F5F5F5</color>
     <color name="materialDarkGrey">#DFDFDF</color>
 
     <color name="mapboxCyan">#3BB2D0</color>
-    <color name="mapboxGreen">#56B881</color>
+	<color name="mapboxGreen">#56B881</color>
+	<color name="mapboxGreenTransparent">#B356B881</color>
     <color name="mapboxBlue">#3887BE</color>
-    <color name="mapboxBlueDark">#1F6EA5</color>
+    <color name="mapboxBlueDark">#223B53</color>
     <color name="mapboxPurple">#8A8ACB</color>
     <color name="mapboxPurpleDark">#7171b2</color>
     <color name="mapboxPurpleLight">#A4A4E5</color>
@@ -25,4 +26,31 @@
 	<color name="mapboxNavyDark">#222B30</color>
 
 	<color name="red500">#F44336</color>
+
+	<color name="green50">#E8F5E9</color>
+	<color name="green100">#C8E6C9</color>
+	<color name="green200">#A5D6A7</color>
+	<color name="green300">#81C784</color>
+	<color name="green400">#66BB6A</color>
+	<color name="green500">#4CAF50</color>
+	<color name="green600">#43A047</color>
+	<color name="green700">#388E3C</color>
+	<color name="green800">#2E7D32</color>
+	<color name="green900">#1B5E20</color>
+	<color name="greenA100">#B9F6CA</color>
+	<color name="greenA200">#69F0AE</color>
+	<color name="greenA400">#00E676</color>
+	<color name="greenA700">#00C853</color>
+
+	<color name="brown50">#EFEBE9</color>
+	<color name="brown100">#D7CCC8</color>
+	<color name="brown200">#BCAAA4</color>
+	<color name="brown300">#A1887F</color>
+	<color name="brown400">#8D6E63</color>
+	<color name="brown500">#795548</color>
+	<color name="brown600">#6D4C41</color>
+	<color name="brown700">#5D4037</color>
+	<color name="brown800">#4E342E</color>
+	<color name="brown900">#3E2723</color>
+
 </resources>
