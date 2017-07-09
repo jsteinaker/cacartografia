@@ -12,14 +12,14 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class DUALCMarkerOptions extends BaseMarkerOptions<DUALCMarker, DUALCMarkerOptions> implements Parcelable {
 
 	private String owner;
-	private Long dualcId;
+	private String dualcId;
 
 	public DUALCMarkerOptions owner(String owner) {
 		this.owner = owner;
 		return getThis();
 	}
 
-	public DUALCMarkerOptions dualcId(Long dualcId) {
+	public DUALCMarkerOptions dualcId(String dualcId) {
 		this.dualcId = dualcId;
 		return getThis();
 	}
@@ -36,7 +36,7 @@ public class DUALCMarkerOptions extends BaseMarkerOptions<DUALCMarker, DUALCMark
         icon(icon);
 		title(in.readString());
 		owner(in.readString());
-		dualcId(in.readLong());
+		dualcId(in.readString());
 	}
 
 	@Override
@@ -73,6 +73,6 @@ public class DUALCMarkerOptions extends BaseMarkerOptions<DUALCMarker, DUALCMark
 		out.writeParcelable(icon.getBitmap(), flags);
 		out.writeString(title);
 		out.writeString(owner);
-		out.writeLong(dualcId);
+		out.writeString(dualcId);
 	}
 }

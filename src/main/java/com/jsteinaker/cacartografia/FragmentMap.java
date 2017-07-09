@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStreamReader;
 import java.lang.Exception;
@@ -73,8 +74,8 @@ public class FragmentMap extends BaseFragment {
 	private DUALCMarker newMarker;
 	private Bundle instanceStateCopy;
 	private FirebaseUser user;
-	private long nextMarkerId;
 	private Hashtable<String, Long> idTable;
+	private Hashtable<Long, String> reverseIdTable;
 	private Polyline route;
 	private Database databaseRef;
 	private ArrayAdapter<Point> autocompleteMarkerList;
@@ -83,8 +84,8 @@ public class FragmentMap extends BaseFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		instanceStateCopy = savedInstanceState;
-		nextMarkerId = 0;
 		idTable = new Hashtable<String, Long>();
+		reverseIdTable = new Hashtable<Long, String>();
  		autocompleteMarkerList = new ArrayAdapter<Point>(getActivity(), android.R.layout.simple_list_item_1);
 		databaseRef = new Database() {
 			@Override
@@ -228,14 +229,16 @@ public class FragmentMap extends BaseFragment {
 						if (marker == newMarker) {
 							user = FirebaseAuth.getInstance().getCurrentUser();
 							if (user != null) {
-								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition(), nextMarkerId);
+								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition());
 								/* Quitamos del mapa el marcador provisional luego de lanzar el otro fragmento */
 								map.removeMarker(newMarker);
 								newMarker = null;
+								return true;
 							}
 							else {
 								newMarker.setTitle(getString(R.string.login_needed));
 								newMarker.setSnippet(getString(R.string.login_needed_message));
+								return false;
 							}
 						}
 						else {
@@ -319,6 +322,7 @@ public class FragmentMap extends BaseFragment {
 					@Override
 					public void onRouteReady() {
 						drawRoute(waypoints);
+						Toast.makeText(getActivity(), street, Toast.LENGTH_SHORT).show();
 					}
 				};
 				route.calculate(Route.WALKING);
@@ -329,8 +333,8 @@ public class FragmentMap extends BaseFragment {
 			@Override
 			public void onClick(View view) {
 				final DUALCMarker markerCopy = ((DUALCMarker) map.getSelectedMarkers().get(0));
-				Long dualcId = markerCopy.getDualcId();
-				((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, dualcId);
+				String id = reverseIdTable.get(markerCopy.getId());
+				((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, id);
 			}
 		});
 	}
@@ -374,7 +378,7 @@ public class FragmentMap extends BaseFragment {
 				 * Evidentemente, hay que repensar el sistema de referencias
 				 * y IDs, o, mejor dicho, las estructuras de datos por
 				 * completo. */
-				map.selectMarker((Marker)map.getAnnotation(idTable.get(result.getId().toString())));
+				map.selectMarker((Marker)map.getAnnotation(idTable.get(result.getId())));
 				Utils.hideKeyboard(getActivity());
 				searchBox.setText(null);
 				hideSearchBox();
@@ -386,6 +390,8 @@ public class FragmentMap extends BaseFragment {
 	public void reloadSearchData(DataSnapshot dataSnapshot) {
 		for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()) {
 			Point suggestion = suggestionSnapshot.getValue(Point.class);
+			// Mete a la fuerza el key de Firebase
+			suggestion.setId(suggestionSnapshot.getKey());
 			autocompleteMarkerList.add(suggestion);
 		}
 	}
@@ -398,14 +404,14 @@ public class FragmentMap extends BaseFragment {
 				.title(properties.getTitle())
 				.snippet(properties.getDescription())
 				.position(geometry.getCoordinatesInLatLng())
-				.owner(properties.getOwner())
-				.dualcId(point.getId()));
+				.owner(properties.getOwner()));
 		idTable.put(userId, mapMarker.getId());
-		nextMarkerId = point.getId() + 1;
+		reverseIdTable.put(mapMarker.getId(), userId);
 	}
 
 	public void removeDeletedMarker(String userId) {
 		map.removeAnnotation(idTable.get(userId));
+		reverseIdTable.remove(idTable.get(userId));
 		idTable.remove(userId);
 	}
 

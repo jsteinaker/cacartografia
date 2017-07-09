@@ -31,7 +31,7 @@ public class AddMarkerFragment extends BaseEditMarkerFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		if (super.onOptionsItemSelected(menuItem) == true) {
-			database.addMarker(point, markerId.toString());
+			database.addMarker(point);
 			interactionListener.onAddMarker();
 			return true;
 		}
@@ -40,8 +40,7 @@ public class AddMarkerFragment extends BaseEditMarkerFragment {
 		}
 	}
 
-	public void setParams(LatLng location, Long id) {
+	public void setParams(LatLng location) {
 		position = location;
-		markerId = id;
 	}
 }

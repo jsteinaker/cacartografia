@@ -77,14 +77,14 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 		return super.onOptionsItemSelected(menuItem);
 	}
 
-	public void loadAddNewMarkerFragment(LatLng location, Long markerId) {
+	public void loadAddNewMarkerFragment(LatLng location) {
 		AddMarkerFragment addMarkerFragment = new AddMarkerFragment();
-		addMarkerFragment.setParams(location, markerId);
+		addMarkerFragment.setParams(location);
 		getSupportFragmentManager().beginTransaction()
 			.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
 	}
 
-	public void loadEditMarkerFragment(DUALCMarker marker, Long markerId) {
+	public void loadEditMarkerFragment(DUALCMarker marker, String markerId) {
 		EditMarkerFragment editMarkerFragment = new EditMarkerFragment();
 		editMarkerFragment.setParams(marker.getPosition(),
 				marker.getTitle(), marker.getSnippet(), markerId);

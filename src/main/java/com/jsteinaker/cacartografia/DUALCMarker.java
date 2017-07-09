@@ -5,9 +5,9 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 public class DUALCMarker extends Marker {
 
 	private String owner;
-	private Long dualcId;
+	private String dualcId;
 
-	public DUALCMarker(DUALCMarkerOptions dualcMarkerOptions, String owner, Long dualcId) {
+	public DUALCMarker(DUALCMarkerOptions dualcMarkerOptions, String owner, String dualcId) {
 		super(dualcMarkerOptions);
 		this.owner = owner;
 		this.dualcId = dualcId;
@@ -17,7 +17,7 @@ public class DUALCMarker extends Marker {
 		return owner;
 	}
 
-	public Long getDualcId() {
+	public String getDualcId() {
 		return dualcId;
 	}
 

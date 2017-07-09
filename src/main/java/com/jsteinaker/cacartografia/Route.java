@@ -12,6 +12,8 @@ import com.mapbox.services.directions.v5.DirectionsCriteria;
 import com.mapbox.services.directions.v5.MapboxDirections;
 import com.mapbox.services.directions.v5.models.DirectionsResponse;
 import com.mapbox.services.directions.v5.models.DirectionsRoute;
+import com.mapbox.services.directions.v5.models.LegStep;
+import com.mapbox.services.directions.v5.models.RouteLeg;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +31,7 @@ public class Route {
 	private Position mDestination;
 	private DirectionsRoute route;
 	protected LatLng[] waypoints;
+	protected String street;
 
 	public Route(LatLng origin, LatLng destination) {
 		mOrigin = Position.fromCoordinates(origin.getLongitude(), origin.getLatitude());
@@ -60,6 +63,11 @@ public class Route {
 						waypoints[i] = new LatLng(point.getLatitude(), point.getLongitude());
 						i++;
 					}
+					List<RouteLeg> routeLegs = route.getLegs();
+					RouteLeg routeLeg = routeLegs.get(0);
+					List<LegStep> legSteps = routeLeg.getSteps();
+					LegStep legStep = legSteps.get(0);
+					street = legStep.getName();
 					onRouteReady();
 				}
 

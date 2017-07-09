@@ -14,6 +14,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class EditMarkerFragment extends BaseEditMarkerFragment {
 
 	private View newFragmentView;
+	private String markerId;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class EditMarkerFragment extends BaseEditMarkerFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		if (super.onOptionsItemSelected(menuItem) == true) {
-			database.editMarker(point, markerId.toString());
+			database.editMarker(point, markerId);
 			interactionListener.onEditMarker();
 			return true;
 		}
@@ -66,7 +67,7 @@ public class EditMarkerFragment extends BaseEditMarkerFragment {
 		alertDialog.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				database.deleteMarker(markerId.toString());
+				database.deleteMarker(markerId);
 				dialog.dismiss();
 				interactionListener.onDeleteMarker();
 			}
@@ -74,7 +75,7 @@ public class EditMarkerFragment extends BaseEditMarkerFragment {
 
 	}
 	
-	public void setParams(LatLng location, String title, String description, Long id) {
+	public void setParams(LatLng location, String title, String description, String id) {
 		position = location;
 		this.title = title;
 		this.description = description;

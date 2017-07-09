@@ -7,14 +7,13 @@ public class Point {
 	private Geometry geometry;
 	private Properties properties;
 	private String type;
-	private Long id;
+	private String id;
 
 	// Constructor
-	public Point(Geometry geometry, Properties properties, Long id) {
+	public Point(Geometry geometry, Properties properties) {
 		this.geometry = geometry;
 		this.properties = properties;
 		this.type = "Feature";
-		this.id = id;
 	}
 
 	// Constructor sin argumentos, para Firebase
@@ -34,7 +33,7 @@ public class Point {
 		return type;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -51,7 +50,7 @@ public class Point {
 		this.type = "Feature";
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

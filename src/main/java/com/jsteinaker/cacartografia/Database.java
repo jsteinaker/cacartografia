@@ -20,8 +20,8 @@ public class Database {
 		database = FirebaseDatabase.getInstance().getReference();
 	}
 
-	public void addMarker(Point marker, String id) {
-		database.child("features").child(id).setValue(marker);
+	public void addMarker(Point marker) {
+		database.child("features").push().setValue(marker);
 	}
 
 	public void editMarker(Point marker, String id) {

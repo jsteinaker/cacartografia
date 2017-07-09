@@ -25,7 +25,6 @@ public class BaseEditMarkerFragment extends BaseFragment {
 	protected String title;
 	protected String description;
 	protected Point point;
-	protected Long markerId;
 	protected Database database;
 	
 	/* UI */
@@ -83,7 +82,7 @@ public class BaseEditMarkerFragment extends BaseFragment {
 			Geometry geometry = new Geometry();
 			geometry.setCoordinatesFromLatLng(position);
 			Properties properties = new Properties(title, description, owner);
-			point = new Point(geometry, properties, markerId);
+			point = new Point(geometry, properties);
 			return true;
 		}
 		return false;
