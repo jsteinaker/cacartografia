@@ -72,7 +72,6 @@ public class FragmentMap extends BaseFragment {
 	private LocationServices locationServices;
 	private DatabaseReference database;
 	private DUALCMarker newMarker;
-	private Bundle instanceStateCopy;
 	private FirebaseUser user;
 	private Hashtable<String, Long> idTable;
 	private Hashtable<Long, String> reverseIdTable;
@@ -83,7 +82,6 @@ public class FragmentMap extends BaseFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		instanceStateCopy = savedInstanceState;
 		idTable = new Hashtable<String, Long>();
 		reverseIdTable = new Hashtable<Long, String>();
  		autocompleteMarkerList = new ArrayAdapter<Point>(getActivity(), android.R.layout.simple_list_item_1);
@@ -425,6 +423,7 @@ public class FragmentMap extends BaseFragment {
 
 	public void deselectMarkers() {
 		map.deselectMarkers();
+		infoPanelDown();
 	}
 
 	/* Sube el panel de información */

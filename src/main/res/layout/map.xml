@@ -82,6 +82,7 @@
 				android:textColor="@color/black"
 				android:textSize="18sp"
 				android:textStyle="bold"
+				android:freezesText="true"
 				/>
 			<TextView
 				android:id="@+id/marker_description"
@@ -90,6 +91,7 @@
 				android:textSize="14sp"
 				android:layout_marginTop="2dp"
 				android:lineSpacingExtra="1dp"
+				android:freezesText="true"
 				/>
 
 		</LinearLayout>
