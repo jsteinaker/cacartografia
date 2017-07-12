@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">De Ushuaia a La Caca</string>
+	<string name="mapbox_access_token">pk.eyJ1IjoianN0ZWluYWtlciIsImEiOiJjaW9yMHhtcWcwMDBidzlrajFpMzNubHI0In0.03AAhq2gtsosuhFbKAZj9A</string>
 	<string name="searchBarHint">Search...</string>
 	<string name="about">Information</string>
 	<string name="credits">De Ushuaia a La Caca, Anales de la cartografía. Made with love by Javier Steinaker, hoping that everyone can find a proper public toilet when in need.</string>

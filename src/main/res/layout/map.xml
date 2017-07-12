@@ -24,9 +24,8 @@
 				android:id="@+id/mapView"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				mapbox:style_url="@string/mapboxStyleUrl"
-				mapbox:access_token="@string/mapboxAccessToken"
-				mapbox:attribution_enabled="false"
+				mapbox:mapbox_styleUrl="@string/mapboxStyleUrl"
+				mapbox:mapbox_uiAttribution="false"
 				/>
 			
 			<android.support.design.widget.FloatingActionButton
@@ -79,7 +78,6 @@
 				android:id="@+id/marker_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:textColor="@color/black"
 				android:textSize="18sp"
 				android:textStyle="bold"
 				android:freezesText="true"

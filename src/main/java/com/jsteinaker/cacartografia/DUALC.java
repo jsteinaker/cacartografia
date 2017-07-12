@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.Mapbox;
 
 public class DUALC extends AppCompatActivity implements OnFragmentInteractionListener, BackHandlerInterface
 {
@@ -26,6 +27,9 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		
+		// Mapbox initialization
+		Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
+
 		fragmentManager = getSupportFragmentManager();
 			
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

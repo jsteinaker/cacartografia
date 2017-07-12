@@ -1,7 +1,6 @@
 package com.jsteinaker.cacartografia;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -47,11 +46,12 @@ import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.location.LocationListener;
-import com.mapbox.mapboxsdk.location.LocationServices;
+import com.mapbox.mapboxsdk.location.LocationSource;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+
+import com.mapbox.services.android.telemetry.location.LocationEngine;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -67,9 +67,8 @@ public class FragmentMap extends BaseFragment {
 	private AutoCompleteTextView searchBox;
 
 	/* Data */
-	private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoianN0ZWluYWtlciIsImEiOiI4Zjc4YTFiNzkwMWFiYmFhZTVhNjJjODdkZGM5YzM1NiJ9.opMzYPAFV5uhK3f_UIqKcQ";
 	private MapboxMap map;
-	private LocationServices locationServices;
+	private LocationEngine locationEngine;
 	private DatabaseReference database;
 	private DUALCMarker newMarker;
 	private FirebaseUser user;
@@ -82,6 +81,11 @@ public class FragmentMap extends BaseFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Location Engine
+		locationEngine = new LocationSource(getActivity());
+		locationEngine.activate();
+
 		idTable = new Hashtable<String, Long>();
 		reverseIdTable = new Hashtable<Long, String>();
  		autocompleteMarkerList = new ArrayAdapter<Point>(getActivity(), android.R.layout.simple_list_item_1);
@@ -189,8 +193,7 @@ public class FragmentMap extends BaseFragment {
 				map = mapboxMap;
 				// Icono a partir de drawable
 				IconFactory iconFactory = IconFactory.getInstance(getActivity());
-				Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_new_marker);
-				final Icon newMarkerIcon = iconFactory.fromDrawable(iconDrawable);
+				final Icon newMarkerIcon = iconFactory.fromResource(R.drawable.ic_new_marker);
 				/* Y el listener para los clicks "largos" que añaden el lugar */
 				map.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
 					@Override
@@ -263,34 +266,6 @@ public class FragmentMap extends BaseFragment {
 					}
 				});
 				
-
-				/* CODIGO VIEJO, PRESENTE PARA REUTILIZAR LOGICA
-
-				// Un adaptador para modificar las InfoWindow mostradas
-				map.setInfoWindowAdapter(new MapboxMap.InfoWindowAdapter() {
-					@Override
-					public View getInfoWindow(Marker marker) {
-						DUALCInfoWindow infoWindow = (DUALCInfoWindow) LayoutInflater
-							.from(getActivity())
-							.inflate(R.layout.info_window, null);
-						// Altura máxima de InfoWindow relativa a la altura del
-						// mapa en pantalla
-						infoWindow.setMaxHeight(mapView.getHeight());
-						TextView tv = (TextView) infoWindow.findViewById(R.id.infowindow_title);
-						tv.setText(marker.getTitle());
-						tv = (TextView) infoWindow.findViewById(R.id.infowindow_description);
-						tv.setText(marker.getSnippet());
-						// Se puede hacer scroll en la descripción
-						tv.setMovementMethod(new ScrollingMovementMethod());
-						ImageButton btn = (ImageButton) infoWindow.findViewById(R.id.infowindow_editmarker);
-						return infoWindow;
-					}
-				});
-				*/
-
-				/* Inicializamos los Location Services */
-				locationServices = LocationServices.getLocationServices(getActivity());
-
 				/* Cargamos marcadores */
 				databaseRef.setUpListeners();
 
@@ -314,7 +289,7 @@ public class FragmentMap extends BaseFragment {
 		directionsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Location location = locationServices.getLastLocation();
+				Location location = locationEngine.getLastLocation();
 				Marker marker = map.getSelectedMarkers().get(0);
 				Route route = new Route(new LatLng(location), new LatLng(marker.getPosition())) {
 					@Override
@@ -347,7 +322,7 @@ public class FragmentMap extends BaseFragment {
 
 	/* Obtiene ubicación por GPS y mueve la cámara */
 	public void locateUser() {
-		Location location = locationServices.getLastLocation();
+		Location location = locationEngine.getLastLocation();
 			// Mover mapa
 			if (location != null) {
 				updateCamera(new LatLng(location));
