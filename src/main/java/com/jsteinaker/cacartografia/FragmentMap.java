@@ -70,13 +70,14 @@ public class FragmentMap extends BaseFragment {
 	private MapboxMap map;
 	private LocationEngine locationEngine;
 	private DatabaseReference database;
-	private DUALCMarker newMarker;
+	private Marker newMarker;
 	private FirebaseUser user;
 	private Hashtable<String, Long> idTable;
 	private Hashtable<Long, String> reverseIdTable;
 	private Polyline route;
 	private Database databaseRef;
 	private ArrayAdapter<Point> autocompleteMarkerList;
+	private Marker selectedMarker;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -153,12 +154,14 @@ public class FragmentMap extends BaseFragment {
     public void onResume() {
         super.onResume();
         mapView.onResume();
+		locationEngine.activate();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
+		locationEngine.deactivate();
     }
 
     @Override
@@ -202,7 +205,7 @@ public class FragmentMap extends BaseFragment {
 						{
 							map.removeMarker(newMarker);
 						}
-						newMarker = (DUALCMarker) map.addMarker(new DUALCMarkerOptions()
+						newMarker = map.addMarker(new MarkerOptions()
 								.position(point)
 								.icon(newMarkerIcon));
 					}
@@ -227,44 +230,13 @@ public class FragmentMap extends BaseFragment {
 				map.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
 					@Override
 					public boolean onMarkerClick(Marker marker) {
-						if (marker == newMarker) {
-							user = FirebaseAuth.getInstance().getCurrentUser();
-							if (user != null) {
-								((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition());
-								/* Quitamos del mapa el marcador provisional luego de lanzar el otro fragmento */
-								map.removeMarker(newMarker);
-								newMarker = null;
-								return true;
-							}
-							else {
-								newMarker.setTitle(getString(R.string.login_needed));
-								newMarker.setSnippet(getString(R.string.login_needed_message));
-								return false;
-							}
-						}
-						else {
-							TextView textView = (TextView) fragmentView.findViewById(R.id.marker_title);
-							textView.setText(marker.getTitle());
-							textView = (TextView) fragmentView.findViewById(R.id.marker_description);
-							textView.setText(marker.getSnippet());
-							infoPanelUp();
-							// Hacemos visible al botón de direcciones
-							directionsButton.setVisibility(View.VISIBLE);
-							// Cast explícito necesario para poder usar getOwner
-							DUALCMarker dualcMarker = (DUALCMarker) marker;
-							user = FirebaseAuth.getInstance().getCurrentUser();
-							// Chequeo del usuario actual y el dueño del marcador,
-							// si es el mismo puede editarlo
-							if (user != null) {
-								String owner = user.getEmail();
-								if (dualcMarker.getOwner().equals(owner)) {
-									editMarkerButton.setVisibility(View.VISIBLE);
-								}
-							}
-						}
+						selectMarker(marker);
 						return true;
 					}
 				});
+
+				/* Movemos la cámara a la ubicación actual */
+				locateUser();
 				
 				/* Cargamos marcadores */
 				databaseRef.setUpListeners();
@@ -290,8 +262,7 @@ public class FragmentMap extends BaseFragment {
 			@Override
 			public void onClick(View view) {
 				Location location = locationEngine.getLastLocation();
-				Marker marker = map.getSelectedMarkers().get(0);
-				Route route = new Route(new LatLng(location), new LatLng(marker.getPosition())) {
+				Route route = new Route(new LatLng(location), new LatLng(selectedMarker.getPosition())) {
 					@Override
 					public void onRouteReady() {
 						drawRoute(waypoints);
@@ -305,9 +276,8 @@ public class FragmentMap extends BaseFragment {
 		editMarkerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				final DUALCMarker markerCopy = ((DUALCMarker) map.getSelectedMarkers().get(0));
-				String id = reverseIdTable.get(markerCopy.getId());
-				((DUALC)getActivity()).loadEditMarkerFragment(markerCopy, id);
+				String id = reverseIdTable.get(selectedMarker.getId());
+				((DUALC)getActivity()).loadEditMarkerFragment(selectedMarker, id);
 			}
 		});
 	}
@@ -351,12 +321,47 @@ public class FragmentMap extends BaseFragment {
 				 * Evidentemente, hay que repensar el sistema de referencias
 				 * y IDs, o, mejor dicho, las estructuras de datos por
 				 * completo. */
-				map.selectMarker((Marker)map.getAnnotation(idTable.get(result.getId())));
+				selectMarker((Marker)map.getAnnotation(idTable.get(result.getId())));
 				Utils.hideKeyboard(getActivity());
 				searchBox.setText(null);
 				hideSearchBox();
 			}
 		});
+	}
+
+	/* Función de selección de marcador */
+	private void selectMarker(Marker marker) {
+		selectedMarker = marker;
+		if (marker == newMarker) {
+			user = FirebaseAuth.getInstance().getCurrentUser();
+			if (user != null) {
+				((DUALC)getActivity()).loadAddNewMarkerFragment(marker.getPosition());
+				/* Quitamos del mapa el marcador provisional luego de lanzar el otro fragmento */
+				map.removeMarker(newMarker);
+				newMarker = null;
+			}
+			else {
+				newMarker.setTitle(getString(R.string.login_needed));
+				newMarker.setSnippet(getString(R.string.login_needed_message));
+			}
+		}
+		else {
+			TextView textView = (TextView) fragmentView.findViewById(R.id.marker_title);
+			textView.setText(marker.getTitle());
+			textView = (TextView) fragmentView.findViewById(R.id.marker_description);
+			textView.setText(marker.getSnippet());
+			infoPanelUp();
+			// Hacemos visible al botón de direcciones
+			directionsButton.setVisibility(View.VISIBLE);
+			user = FirebaseAuth.getInstance().getCurrentUser();
+			// Chequeo del usuario actual y el dueño del marcador,
+			// si es el mismo puede editarlo
+			if (user != null) {
+				String owner = user.getEmail();
+				/* FIXME: de momento no se hace chequeo de dueño */
+				editMarkerButton.setVisibility(View.VISIBLE);
+			}
+		}
 	}
 
 	/* Refresca los datos de búsqueda en caso de cambios */
@@ -373,11 +378,10 @@ public class FragmentMap extends BaseFragment {
 	public void drawNewMarker(Point point, String userId) {
 		Properties properties = point.getProperties();
 		Geometry geometry = point.getGeometry();
-		DUALCMarker mapMarker = (DUALCMarker) map.addMarker(new DUALCMarkerOptions()
+		Marker mapMarker = map.addMarker(new MarkerOptions()
 				.title(properties.getTitle())
 				.snippet(properties.getDescription())
-				.position(geometry.getCoordinatesInLatLng())
-				.owner(properties.getOwner()));
+				.position(geometry.getCoordinatesInLatLng()));
 		idTable.put(userId, mapMarker.getId());
 		reverseIdTable.put(mapMarker.getId(), userId);
 	}

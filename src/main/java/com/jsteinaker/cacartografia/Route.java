@@ -45,6 +45,7 @@ public class Route {
 				.setOrigin(mOrigin)
 				.setDestination(mDestination)
 				.setProfile(profile)
+				.setSteps(true)
 				.build();
 			client.enqueueCall(new Callback<DirectionsResponse>() {
 				@Override
@@ -56,7 +57,7 @@ public class Route {
 						return;
 					}
 
-					List<Position> positions = PolylineUtils.decode(route.getGeometry(), 5);
+					List<Position> positions = PolylineUtils.decode(route.getGeometry(), 6);
 					waypoints = new LatLng[positions.size()];
 					int i = 0;
 					for (Position point : positions) {
@@ -66,6 +67,7 @@ public class Route {
 					List<RouteLeg> routeLegs = route.getLegs();
 					RouteLeg routeLeg = routeLegs.get(0);
 					List<LegStep> legSteps = routeLeg.getSteps();
+					Log.e("DUALC", "Size of legs array:" + legSteps.size());
 					LegStep legStep = legSteps.get(0);
 					street = legStep.getName();
 					onRouteReady();

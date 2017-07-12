@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.Mapbox;
 
@@ -88,7 +89,7 @@ public class DUALC extends AppCompatActivity implements OnFragmentInteractionLis
 			.replace(R.id.fragment_frame, addMarkerFragment).addToBackStack(null).commit();
 	}
 
-	public void loadEditMarkerFragment(DUALCMarker marker, String markerId) {
+	public void loadEditMarkerFragment(Marker marker, String markerId) {
 		EditMarkerFragment editMarkerFragment = new EditMarkerFragment();
 		editMarkerFragment.setParams(marker.getPosition(),
 				marker.getTitle(), marker.getSnippet(), markerId);
